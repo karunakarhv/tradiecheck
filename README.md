@@ -20,7 +20,8 @@ Instantly verify Australian tradie licences, high-risk work certifications, and 
 | Frontend | React 19, Vite 7, plain JavaScript |
 | Backend | Express 5, Node.js |
 | Auth | NSW Government OAuth 2.0 client credentials |
-| Tests | Vitest, @testing-library/react, happy-dom |
+| Unit tests | Vitest, @testing-library/react, happy-dom |
+| E2E tests | Playwright |
 
 ---
 
@@ -108,15 +109,32 @@ The NSW API uses OAuth 2.0 client credentials flow. The backend fetches and cach
 
 ## Running Tests
 
+### Unit tests
+
 ```bash
-npm test
+npm test              # run once
+npm run test:watch    # watch mode during development
 ```
 
 Tests use Vitest + Testing Library. Coverage includes utility functions (`parseNSWDate`, `NSW_STATUS`) and all shared components (`StarRating`, `CheckRow`, `StatusBadge`, `SourceIcon`).
 
+### E2E tests
+
 ```bash
-npm run test:watch   # watch mode during development
+npm run test:e2e        # headless (auto-starts the dev server)
+npm run test:e2e:ui     # interactive Playwright UI
 ```
+
+E2E tests use Playwright + Chromium. The config (`playwright.config.js`) automatically starts `npm run dev` before running. Tests cover:
+
+- Homepage loads with search input and demo chips
+- All three mock tradie searches (Active, Expiring, Suspended)
+- Search by typing + Enter key and via the CHECK button
+- NEW SEARCH and TRY AGAIN reset flows
+- Not-found state when the backend is unreachable
+- Navigation to `/dashboard`, `/mobile`, and `/api-config`
+
+> **Note:** E2E tests use the local mock data for the three demo codes (`LIC-48291`, `PLB-77432`, `BLD-10293`) and do not require NSW API credentials.
 
 ---
 
@@ -143,6 +161,9 @@ tradiecheck/
 │   │   └── __tests__/
 │   └── test/
 │       └── setup.js
+├── e2e/
+│   └── tradiecheck.spec.js          # Playwright E2E tests
+├── playwright.config.js             # Playwright configuration
 └── vite.config.js
 ```
 
@@ -156,5 +177,7 @@ tradiecheck/
 | `npm run build` | Production build |
 | `npm run preview` | Preview production build |
 | `npm run lint` | Run ESLint |
-| `npm test` | Run tests once |
-| `npm run test:watch` | Run tests in watch mode |
+| `npm test` | Run unit tests once |
+| `npm run test:watch` | Run unit tests in watch mode |
+| `npm run test:e2e` | Run Playwright E2E tests (headless) |
+| `npm run test:e2e:ui` | Run Playwright E2E tests (interactive UI) |
