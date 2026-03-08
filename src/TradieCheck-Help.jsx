@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { FLAGS } from "./lib/flags";
 
 const NAV_LINKS = [
   { label: "Mobile", href: "/mobile" },
   { label: "Dashboard", href: "/dashboard" },
-  { label: "API", href: "/api-config" },
+  ...(FLAGS.API_CONFIG ? [{ label: "API", href: "/api-config" }] : []),
 ];
 
 const TOC = [

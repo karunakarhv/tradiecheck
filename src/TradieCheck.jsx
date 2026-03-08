@@ -3,6 +3,7 @@ import { NSW_STATUS, parseNSWDate } from "./lib/nsw";
 import { MOCK_TRADES } from "./lib/mockData";
 import StarRating from "./components/StarRating";
 import CheckRow from "./components/CheckRow";
+import { FLAGS } from "./lib/flags";
 
 const STATUS_CONFIG = {
   ACTIVE: { color: "#00e87a", label: "VERIFIED & ACTIVE", icon: "✓" },
@@ -378,7 +379,7 @@ const handleSelect = (licence, data) => {
                 {[
                   { label: "Mobile", href: "/mobile" },
                   { label: "Dashboard", href: "/dashboard" },
-                  { label: "API", href: "/api-config" },
+                  ...(FLAGS.API_CONFIG ? [{ label: "API", href: "/api-config" }] : []),
                   { label: "Help", href: "/help" },
                 ].map(({ label, href }) => (
                   <a key={href} href={href} style={{
