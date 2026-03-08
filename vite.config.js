@@ -6,6 +6,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     historyApiFallback: true,
+    proxy: {
+      '/api': 'http://localhost:3001',
+    },
   },
   test: {
     globals: true,

@@ -223,7 +223,7 @@ const handleSearch = async (q) => {
   setResult(null);
 
   try {
-    const res = await fetch(`http://localhost:3001/api/check?query=${encodeURIComponent(term)}`);
+    const res = await fetch(`/api/check?query=${encodeURIComponent(term)}`);
     const data = await res.json();
 
     const trades = Array.isArray(data.trades) ? data.trades : [];
