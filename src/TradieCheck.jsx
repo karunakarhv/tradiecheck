@@ -379,6 +379,7 @@ const handleSelect = (licence, data) => {
                   { label: "Mobile", href: "/mobile" },
                   { label: "Dashboard", href: "/dashboard" },
                   { label: "API", href: "/api-config" },
+                  { label: "Help", href: "/help" },
                 ].map(({ label, href }) => (
                   <a key={href} href={href} style={{
                     fontSize: "10px", color: "#333", padding: "4px 8px",
@@ -516,7 +517,7 @@ const handleSelect = (licence, data) => {
             display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
             <div style={{ fontSize: "10px", color: "#2a2a2a", letterSpacing: "0.06em", fontFamily: "'DM Mono', monospace" }}>
-              DATA: NSW · VIC · QLD · WA · SA
+              DATA: NSW ONLY
             </div>
             <div style={{ display: "flex", gap: "16px" }}>
               {["Privacy", "API", "About"].map(l => (
