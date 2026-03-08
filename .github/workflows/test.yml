@@ -58,6 +58,8 @@ jobs:
     needs: [unit, e2e]
     if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -101,7 +103,7 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: "[${{ github.repository }}] Build/Test failed — deploy blocked"
           to: ${{ secrets.MAIL_TO }}
-          from: VerifyMyTradie CI <${{ secrets.MAIL_USERNAME }}>
+          from: TradieCheck CI <${{ secrets.MAIL_USERNAME }}>
           body: |
             Tests failed on the main branch. Production deploy was blocked.
 
