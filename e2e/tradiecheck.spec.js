@@ -17,7 +17,9 @@ test.describe('TradieCheck homepage', () => {
   test('navigation links are present', async ({ page }) => {
     await expect(page.getByRole('link', { name: 'Mobile' })).toHaveAttribute('href', '/mobile');
     await expect(page.getByRole('link', { name: 'Dashboard' })).toHaveAttribute('href', '/dashboard');
-    await expect(page.getByRole('link', { name: 'API' })).toHaveAttribute('href', '/api-config');
+    await expect(page.getByRole('link', { name: 'Help' })).toHaveAttribute('href', '/help');
+    // API nav link is feature-flagged (VITE_ENABLE_API_CONFIG) — hidden by default
+    await expect(page.getByRole('link', { name: 'API' })).toHaveCount(0);
   });
 
   test('CHECK button is disabled with empty input', async ({ page }) => {
