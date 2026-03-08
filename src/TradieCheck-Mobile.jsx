@@ -59,7 +59,9 @@ function HomeScreen({ onSearch, onDemo }) {
             background: "#1a1814", display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00e87a" strokeWidth="2.5">
-              <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="10" cy="10" r="6" />
+              <path d="m21 21-4.5-4.5" strokeLinecap="round" />
+              <path d="M7.5 10l2 2 3-3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
         </div>
@@ -444,7 +446,7 @@ export default function MobileApp() {
             Check before<br />you unlock<br />the door.
           </h2>
           <p style={{ fontSize: "15px", color: "#888", lineHeight: 1.7, marginBottom: "32px" }}>
-            The TradieCheck app gives Australian homeowners instant access to government licence databases right from their pocket.
+            The VerifyMyTradie app gives Australian homeowners instant access to government licence databases right from their pocket.
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "32px" }}>

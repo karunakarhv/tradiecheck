@@ -510,7 +510,7 @@ export default function NSWAPIConfig() {
             </div>
             <a href="/" style={{ textDecoration: "none" }}>
               <span style={{ fontWeight: 800, fontSize: "14px", color: "#fff" }}>
-                TradieCheck
+                VerifyMyTradie
               </span>
             </a>
             <span style={{ color: "rgba(255,255,255,0.2)", fontWeight: 400, fontSize: "14px" }}>/</span>
