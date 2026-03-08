@@ -160,7 +160,7 @@ export default function TradieDashboard() {
             </svg>
           </div>
           <a href="/" style={{ textDecoration: "none", fontWeight: 800, fontSize: "14px", color: "#fff" }}>
-            VerifyMy<span style={{ color: "#00e87a" }}>Tradie</span>
+            Tradie<span style={{ color: "#00e87a" }}>Check</span>
           </a>
         </div>
 

@@ -366,7 +366,7 @@ const handleSelect = (licence, data) => {
                 </svg>
               </div>
               <span style={{ fontWeight: 900, fontSize: "16px", letterSpacing: "-0.03em" }}>
-                VerifyMy<span style={{ color: "#00e87a" }}>Tradie</span>
+                Tradie<span style={{ color: "#00e87a" }}>Check</span>
               </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>

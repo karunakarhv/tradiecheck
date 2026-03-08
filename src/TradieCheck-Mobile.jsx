@@ -446,7 +446,7 @@ export default function MobileApp() {
             Check before<br />you unlock<br />the door.
           </h2>
           <p style={{ fontSize: "15px", color: "#888", lineHeight: 1.7, marginBottom: "32px" }}>
-            The VerifyMyTradie app gives Australian homeowners instant access to government licence databases right from their pocket.
+            The TradieCheck app gives Australian homeowners instant access to government licence databases right from their pocket.
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "32px" }}>
