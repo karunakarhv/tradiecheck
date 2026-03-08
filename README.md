@@ -1,5 +1,7 @@
 # TradieCheck
 
+[![Tests](https://github.com/karunakarhv/tradiecheck/actions/workflows/test.yml/badge.svg)](https://github.com/karunakarhv/tradiecheck/actions/workflows/test.yml)
+
 Instantly verify Australian tradie licences, high-risk work certifications, and asbestos qualifications against live NSW Government registers.
 
 ![TradieCheck](image.png)
