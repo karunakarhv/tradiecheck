@@ -3,6 +3,7 @@ import { NSW_STATUS, parseNSWDate } from "./lib/nsw";
 import { MOCK_TRADES } from "./lib/mockData";
 import StarRating from "./components/StarRating";
 import CheckRow from "./components/CheckRow";
+import LogoutButton from "./components/LogoutButton";
 import { FLAGS } from "./lib/flags";
 
 const STATUS_CONFIG = {
@@ -272,6 +273,8 @@ const handleSelect = (licence, data) => {
   });
 };
 
+  const hasResults = loading || !!results || !!result || notFound;
+
   return (
     <div style={{
       minHeight: "100vh",
@@ -290,31 +293,54 @@ const handleSelect = (licence, data) => {
         input:focus { outline: none }
         ::-webkit-scrollbar { width:4px } ::-webkit-scrollbar-track{background:#0a0a0a} ::-webkit-scrollbar-thumb{background:#222}
 
+        /* ── Base layout: single centered column (no results) ── */
         .tc-layout {
           display: grid;
           grid-template-columns: 1fr;
           min-height: 100vh;
+          max-width: 680px;
+          margin: 0 auto;
+          width: 100%;
         }
         .tc-left {
-          padding: 32px 28px 48px;
-          border-right: none;
-          border-bottom: 1px solid #111;
+          padding: 40px 28px 48px;
           position: relative;
           z-index: 1;
           display: flex;
           flex-direction: column;
+          align-items: center;
+        }
+        .tc-left > * {
+          width: 100%;
+          max-width: 520px;
         }
         .tc-right {
+          display: none;
+        }
+
+        /* ── Results active: two-column layout ── */
+        .tc-layout.tc-has-results {
+          max-width: 1200px;
+          grid-template-columns: 1fr;
+        }
+        .tc-layout.tc-has-results .tc-left {
+          border-bottom: 1px solid #111;
+          padding: 32px 28px 48px;
+          align-items: center;
+        }
+        .tc-layout.tc-has-results .tc-right {
+          display: block;
           padding: 32px 28px 48px;
           position: relative;
           z-index: 1;
+          animation: fadeIn 0.3s ease;
         }
+
         @media (min-width: 900px) {
-          .tc-layout {
-            grid-template-columns: 420px 1fr;
-            min-height: 100vh;
+          .tc-layout.tc-has-results {
+            grid-template-columns: 1fr 1fr;
           }
-          .tc-left {
+          .tc-layout.tc-has-results .tc-left {
             position: sticky;
             top: 0;
             height: 100vh;
@@ -322,17 +348,23 @@ const handleSelect = (licence, data) => {
             border-right: 1px solid #111;
             border-bottom: none;
             padding: 40px 40px 48px;
+            align-items: center;
           }
-          .tc-right {
+          .tc-layout.tc-has-results .tc-right {
             padding: 40px 48px 48px;
             overflow-y: auto;
           }
         }
         @media (min-width: 1280px) {
-          .tc-left { padding: 48px 48px 48px; }
-          .tc-right { padding: 48px 64px 48px; }
+          .tc-layout.tc-has-results .tc-left { padding: 48px 48px 48px; }
+          .tc-layout.tc-has-results .tc-right { padding: 48px 64px 48px; }
         }
       `}</style>
+
+      {/* Fixed logout button — always visible, top-right */}
+      <div style={{ position: "fixed", top: "16px", right: "20px", zIndex: 100 }}>
+        <LogoutButton variant="dark" />
+      </div>
 
       {/* Background grid */}
       <div style={{
@@ -343,7 +375,7 @@ const handleSelect = (licence, data) => {
       }} />
       <div style={{ position: "fixed", top: "-200px", left: "25%", width: "600px", height: "400px", background: "radial-gradient(ellipse, rgba(0,232,122,0.06) 0%, transparent 70%)", zIndex: 0, pointerEvents: "none" }} />
 
-      <div className="tc-layout">
+      <div className={`tc-layout${hasResults ? " tc-has-results" : ""}`}>
 
         {/* ── LEFT PANEL ── */}
         <div className="tc-left">
@@ -377,6 +409,7 @@ const handleSelect = (licence, data) => {
               </div>
               <div style={{ display: "flex", gap: "4px" }}>
                 {[
+                  { label: "Home", href: "/welcome" },
                   { label: "Mobile", href: "/mobile" },
                   { label: "Dashboard", href: "/dashboard" },
                   ...(FLAGS.API_CONFIG ? [{ label: "API", href: "/api-config" }] : []),

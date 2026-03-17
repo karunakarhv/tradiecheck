@@ -415,7 +415,7 @@ export default function MobileApp() {
         ::-webkit-scrollbar { display: none; }
       `}</style>
 
-      <a href="/" style={{
+      <a href="/welcome" style={{
         position: "fixed", top: "20px", left: "20px",
         background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)",
         border: "1px solid rgba(255,255,255,0.25)", borderRadius: "8px",

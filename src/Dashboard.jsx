@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NSW_STATUS, parseNSWDate } from "./lib/nsw";
 import StatusBadge from "./components/StatusBadge";
 import SourceIcon from "./components/SourceIcon";
+import LogoutButton from "./components/LogoutButton";
 
 function mapAPIResponse(data) {
   const trades = Array.isArray(data.trades) ? data.trades : [];
@@ -126,6 +127,10 @@ export default function TradieDashboard() {
       fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
       display: "flex",
     }}>
+      {/* Fixed sign out button — always visible, top-right */}
+      <div style={{ position: "fixed", top: "16px", right: "20px", zIndex: 100 }}>
+        <LogoutButton variant="dark" />
+      </div>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap');
         * { box-sizing: border-box; margin:0; padding:0; }
@@ -159,7 +164,7 @@ export default function TradieDashboard() {
               <path d="M7.5 10l2 2 3-3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <a href="/" style={{ textDecoration: "none", fontWeight: 800, fontSize: "14px", color: "#fff" }}>
+          <a href="/welcome" style={{ textDecoration: "none", fontWeight: 800, fontSize: "14px", color: "#fff" }}>
             Tradie<span style={{ color: "#00e87a" }}>Check</span>
           </a>
         </div>
