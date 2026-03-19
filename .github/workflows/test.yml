@@ -44,6 +44,9 @@ jobs:
       
       - name: Create .env file from secret
         run: echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
+             echo "Created .env file with content from secret"
+             cat .env
+
       - name: Run E2E tests
         run: npm run test:e2e
 
