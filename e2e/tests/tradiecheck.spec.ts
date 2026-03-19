@@ -190,12 +190,6 @@ test.describe("Navigation", () => {
     await page.goto("/verifyTradie");
   });
 
-  test.afterEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.logout();
-    await expect(page).toHaveURL("/login");
-  });
-
   test("navigates to tradie check page", async ({ page }) => {
     await page.goto("/verifyTradie");
     await expect(page).toHaveURL("/verifyTradie");

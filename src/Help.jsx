@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FLAGS } from "./lib/flags";
+import LogoutButton from './components/LogoutButton'
 
 const NAV_LINKS = [
   { label: "Mobile", href: "/mobile" },
@@ -260,6 +261,8 @@ export default function HelpPage() {
             <a key={href} href={href} className="nav-link">{label}</a>
           ))}
         </div>
+        {/* Fixed logout button — always visible, top-right */}
+          <LogoutButton variant="dark" />
       </nav>
 
       {/* Hero */}

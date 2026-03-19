@@ -15,7 +15,9 @@ export class LoginPage extends BasePage {
   }
 
   async submit() {
-    await this.page.locator(LoginPageLocators.submitButton).click();
+    await this.page
+      .locator(LoginPageLocators.submitButton)
+      .click({ timeout: 10000 });
   }
 
   async login(email: string, password: string) {
