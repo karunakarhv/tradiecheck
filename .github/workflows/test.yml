@@ -42,12 +42,13 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
+      - name: Recreate .env file
+        run: |
+          echo "${{ secrets.ENV_FILE_CONTENT }}" | base64 --decode > .env
+          ls -la
+          cat .env | wc -l      # Count lines in .env (should be > 0)
+
       - name: Run E2E tests
-        env:
-          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
-          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-          INVALID_EMAIL: ${{ secrets.INVALID_EMAIL }}
-          INVALID_PASSWORD: ${{ secrets.INVALID_PASSWORD }}
         run: npm run test:e2e
 
       - name: Upload Playwright report
