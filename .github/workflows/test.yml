@@ -41,7 +41,9 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
-
+      
+      - name: Create .env file from secret
+        run: echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
       - name: Run E2E tests
         run: npm run test:e2e
 
