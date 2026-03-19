@@ -10,7 +10,8 @@ test.describe("TradieCheck homepage", () => {
     const loginPage = new LoginPage(page);
     await loginPage.login(email, password);
     await expect(page).toHaveURL("/welcome");
-    await page.goto("/verifyTradie");
+    const tradieChecklink = page.getByRole("link", { name: "Verify a Tradie" });
+    await tradieChecklink.click({ timeout: 10000 });
   });
 
   test.afterEach(async ({ page }) => {
@@ -74,7 +75,8 @@ test.describe("Mock data searches", () => {
     const loginPage = new LoginPage(page);
     await loginPage.login(email, password);
     await expect(page).toHaveURL("/welcome");
-    await page.goto("/verifyTradie");
+    const tradieChecklink = page.getByRole("link", { name: "Verify a Tradie" });
+    await tradieChecklink.click({ timeout: 10000 });
   });
 
   test.afterEach(async ({ page }) => {
@@ -143,7 +145,8 @@ test.describe("Not found state", () => {
     const loginPage = new LoginPage(page);
     await loginPage.login(email, password);
     await expect(page).toHaveURL("/welcome");
-    await page.goto("/verifyTradie");
+    const tradieChecklink = page.getByRole("link", { name: "Verify a Tradie" });
+    await tradieChecklink.click({ timeout: 10000 });
   });
 
   test.afterEach(async ({ page }) => {
@@ -187,7 +190,8 @@ test.describe("Navigation", () => {
     const loginPage = new LoginPage(page);
     await loginPage.login(email, password);
     await expect(page).toHaveURL("/welcome");
-    await page.goto("/verifyTradie");
+    const tradieChecklink = page.getByRole("link", { name: "Verify a Tradie" });
+    await tradieChecklink.click({ timeout: 10000 });
   });
 
   test("navigates to tradie check page", async ({ page }) => {
