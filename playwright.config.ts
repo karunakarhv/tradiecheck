@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 // Read from ".env" file
-dotenv.config({ path: path.resolve(__dirname, ".env") });
+dotenv.config({ path: "./.env" });
 
 export default defineConfig({
   testDir: "./e2e",
