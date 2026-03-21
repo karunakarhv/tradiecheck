@@ -648,7 +648,6 @@ export default function Login() {
         <div className="gl-page-footer">
           <button type="button" className="gl-link" style={{ fontSize: '12px', fontWeight: 400, color: '#5f6368' }}>Privacy</button>
           <button type="button" className="gl-link" style={{ fontSize: '12px', fontWeight: 400, color: '#5f6368' }}>Terms</button>
-          <a href="/help" className="gl-link" style={{ fontSize: '12px', fontWeight: 400, color: '#5f6368' }}>Help</a>
         </div>
       </div>
     </>
