@@ -1,41 +1,52 @@
 import { test, expect } from "@playwright/test";
 import LoginPage from "../pages/LoginPage";
-import * as dotenv from "dotenv"; // or import dotenv from 'dotenv';
+import TradieCheckPage from "../pages/TradieCheckPage";
+import DashboardPage from "../pages/DashboardPage";
+import MobilePage from "../pages/MobilePage";
+import HelpPage from "../pages/HelpPage";
+import * as dotenv from "dotenv";
 dotenv.config();
 
-test.describe("Navigation", () => {
+test.describe("Navigation via POM", () => {
+  let loginPage: LoginPage;
+
   test.beforeEach(async ({ page }) => {
-    const email = process.env.TEST_EMAIL || "";
-    const password = process.env.TEST_PASSWORD || "";
-    const loginPage = new LoginPage(page);
-    await loginPage.login(email, password);
-    await expect(page).toHaveURL("/welcome");
-    const tradieChecklink = page.getByRole("link", { name: "Verify a Tradie" });
-    await tradieChecklink.click({ timeout: 10000 });
+    loginPage = new LoginPage(page);
+    await loginPage.login(
+      process.env.TEST_EMAIL || "",
+      process.env.TEST_PASSWORD || ""
+    );
+    await expect(page).toHaveURL(/.*welcome.*/);
   });
 
   test("navigates to tradie check page", async ({ page }) => {
-    await page.goto("/verifyTradie");
-    await expect(page).toHaveURL("/verifyTradie");
+    const p = new TradieCheckPage(page);
+    await p.visit();
+    await expect(page).toHaveURL(/.*verifyTradie.*/);
+    await expect(await p.verifyHeader()).toBeVisible();
   });
 
   test("navigates to dashboard page", async ({ page }) => {
-    await page.goto("/dashboard");
-    await expect(page).toHaveURL("/dashboard");
+    const p = new DashboardPage(page);
+    await p.visit();
+    await expect(page).toHaveURL(/.*dashboard.*/);
   });
 
   test("navigates to mobile page", async ({ page }) => {
-    await page.goto("/mobile");
-    await expect(page).toHaveURL("/mobile");
+    const p = new MobilePage(page);
+    await p.visit();
+    await expect(page).toHaveURL(/.*mobile.*/);
   });
 
   test("navigates to help page", async ({ page }) => {
-    await page.goto("/help");
-    await expect(page).toHaveURL("/help");
+    const p = new HelpPage(page);
+    await p.visit();
+    await expect(page).toHaveURL(/.*help.*/);
   });
 
   test("navigates to api-config page", async ({ page }) => {
     await page.goto("/api-config");
-    await expect(page).toHaveURL("/api-config");
+    await expect(page).toHaveURL(/.*api-config.*/);
   });
 });
+

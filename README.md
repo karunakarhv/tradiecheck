@@ -6,6 +6,14 @@ Instantly verify Australian tradie licences, high-risk work certifications, and 
 
 ![TradieCheck](image.png)
 
+### Additional Views
+<p align="center">
+  <img src="dashboard.png" width="32%" alt="Dashboard Page" />
+  <img src="mobile.png" width="32%" alt="Mobile App View" />
+  <img src="help.png" width="32%" alt="Help Page" />
+</p>
+
+
 ## Features
 
 - **Live licence lookup** — searches NSW Fair Trading (Trades), SafeWork NSW (High Risk Work), and the Asbestos & Demolition Register in parallel
@@ -96,14 +104,47 @@ The NSW API uses OAuth 2.0 client credentials flow. The backend fetches and cach
 
 ---
 
+## Deployment (Google Cloud Run)
+
+TradieCheck is designed to deploy seamlessly to Google Cloud Run. The backend (`server.js`) natively serves the built frontend (`dist/`) statically, meaning no separate infrastructure is needed.
+
+### 1. Manual Deployment
+A native script `deploy-gcp.sh` is provided to deploy natively to Cloud Run from your terminal while explicitly capturing your `.env` build-time secrets (`VITE_SUPABASE_URL`) safely.
+
+```bash
+# Make it executable (only needed once)
+chmod +x deploy-gcp.sh
+
+# Deploy to Cloud Run
+./deploy-gcp.sh
+```
+
+### 2. GitHub Actions (CI/CD)
+The `.github/workflows/test.yml` pipeline automatically deploys your `main` branch directly to Cloud Run after running both Unit and E2E tests successfully.
+
+To use the automated pipeline, configure the following secrets in your GitHub repository (**Settings → Secrets and variables → Actions**):
+1. `GCP_CREDENTIALS` (Required): Your Google Cloud Service Account JSON Key with permissions to deploy to Cloud Run (`Editor` or `Cloud Run Admin`, `Cloud Build Editor`, `Artifact Registry Writer`).
+2. `ENV_FILE_CONTENT` (Required): A `base64` string of your local `.env` file containing both your `VITE_` variables and backend API credentials. Run `cat .env | base64` locally to grab it.
+
+---
+
 ## Routes
 
 | URL | Description |
 |-----|-------------|
-| `/` | Main licence search |
+| **Public Routes** | |
+| `/login` | User authentication and login page |
+| | |
+| **Protected Routes** | *(Requires active session)* |
+| `/` or `/welcome` | Landing / Welcome dashboard |
+| `/verifyTradie` | Main verification lookup & search interface |
 | `/dashboard` | Tradie self-service portal |
 | `/mobile` | Mobile app UI mockup |
-| `/api-config` | NSW API docs and credential config |
+| `/help` | Help / Information page |
+| `/api-config` | NSW API docs and credential config (if enabled in feature flags) |
+| | |
+| **Backend API** | |
+| `/api/check?query={term}`| Express backend proxy to live NSW Government registers |
 
 ---
 

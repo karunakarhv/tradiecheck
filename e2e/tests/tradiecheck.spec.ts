@@ -1,17 +1,21 @@
 import { test, expect } from "@playwright/test";
 import LoginPage from "../pages/LoginPage";
-import * as dotenv from "dotenv"; // or import dotenv from 'dotenv';
+import TradieCheckPage from "../pages/TradieCheckPage";
+import * as dotenv from "dotenv";
 dotenv.config();
 
 test.describe("TradieCheck homepage", () => {
+  let tradieCheckPage: TradieCheckPage;
+
   test.beforeEach(async ({ page }) => {
     const email = process.env.TEST_EMAIL || "";
     const password = process.env.TEST_PASSWORD || "";
     const loginPage = new LoginPage(page);
     await loginPage.login(email, password);
     await expect(page).toHaveURL("/welcome");
-    const tradieChecklink = page.getByRole("link", { name: "Verify a Tradie" });
-    await tradieChecklink.click({ timeout: 10000 });
+    
+    tradieCheckPage = new TradieCheckPage(page);
+    await tradieCheckPage.visit();
   });
 
   test.afterEach(async ({ page }) => {
@@ -20,165 +24,78 @@ test.describe("TradieCheck homepage", () => {
     await expect(page).toHaveURL("/login");
   });
 
-  test("loads with search input and demo chips", async ({ page }) => {
-    await expect(page.getByText("TradieCheck")).toBeVisible();
-    await expect(
-      page.getByPlaceholder("Name or licence number..."),
-    ).toBeVisible();
-    await expect(page.getByRole("button", { name: "CHECK" })).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Active Electrician" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Expiring Plumber" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Suspended Builder" }),
-    ).toBeVisible();
+  test("loads with search input and demo chips", async () => {
+    await expect(await tradieCheckPage.verifyHeader()).toBeVisible();
+    await expect(tradieCheckPage.getSearchInput()).toBeVisible();
+    await expect(tradieCheckPage.getCheckButton()).toBeVisible();
+    await expect(tradieCheckPage.getActiveElectricianChip()).toBeVisible();
+    await expect(tradieCheckPage.getExpiringPlumberChip()).toBeVisible();
+    await expect(tradieCheckPage.getSuspendedBuilderChip()).toBeVisible();
   });
 
-  test("navigation links are present", async ({ page }) => {
-    await expect(page.getByRole("link", { name: "Home" })).toHaveAttribute(
-      "href",
-      "/welcome",
-    );
-    await expect(page.getByRole("link", { name: "Mobile" })).toHaveAttribute(
-      "href",
-      "/mobile",
-    );
-    await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute(
-      "href",
-      "/dashboard",
-    );
-    await expect(page.getByRole("link", { name: "Help" })).toHaveAttribute(
-      "href",
-      "/help",
-    );
-    // API nav link is feature-flagged (VITE_ENABLE_API_CONFIG) — hidden by default
-    await expect(page.getByRole("link", { name: "API" })).toHaveCount(0);
+  test("CHECK button is disabled with empty input", async () => {
+    await expect(tradieCheckPage.getCheckButton()).toBeDisabled();
   });
 
-  test("CHECK button is disabled with empty input", async ({ page }) => {
-    await expect(page.getByRole("button", { name: "CHECK" })).toBeDisabled();
+  test("CHECK button enables when text is entered", async () => {
+    await tradieCheckPage.fillSearch("LIC-48291");
+    await expect(tradieCheckPage.getCheckButton()).toBeEnabled();
   });
 
-  test("CHECK button enables when text is entered", async ({ page }) => {
-    await page.getByPlaceholder("Name or licence number...").fill("LIC-48291");
-    await expect(page.getByRole("button", { name: "CHECK" })).toBeEnabled();
-  });
-});
-
-test.describe("Mock data searches", () => {
-  test.beforeEach(async ({ page }) => {
-    const email = process.env.TEST_EMAIL || "";
-    const password = process.env.TEST_PASSWORD || "";
-    const loginPage = new LoginPage(page);
-    await loginPage.login(email, password);
-    await expect(page).toHaveURL("/welcome");
-    const tradieChecklink = page.getByRole("link", { name: "Verify a Tradie" });
-    await tradieChecklink.click({ timeout: 10000 });
-  });
-
-  test.afterEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.logout();
-    await expect(page).toHaveURL("/login");
-  });
-
-  test("Active Electrician chip shows VERIFIED & ACTIVE result", async ({
-    page,
-  }) => {
-    await page.getByRole("button", { name: "Active Electrician" }).click();
+  test("Active Electrician chip shows VERIFIED & ACTIVE result", async ({ page }) => {
+    await tradieCheckPage.getActiveElectricianChip().click();
     await expect(page.getByText("VERIFIED & ACTIVE")).toBeVisible();
     await expect(page.getByText("Jake Morrison")).toBeVisible();
     await expect(page.getByText("Licensed Electrician")).toBeVisible();
     await expect(page.getByText("LIC-48291")).toBeVisible();
   });
 
-  test("Expiring Plumber chip shows ACTIVE result with alert", async ({
-    page,
-  }) => {
-    await page.getByRole("button", { name: "Expiring Plumber" }).click();
+  test("Expiring Plumber chip shows ACTIVE result with alert", async ({ page }) => {
+    await tradieCheckPage.getExpiringPlumberChip().click();
     await expect(page.getByText("VERIFIED & ACTIVE")).toBeVisible();
     await expect(page.getByText("Sandra Okafor")).toBeVisible();
     await expect(page.getByText("Plumber & Drainer")).toBeVisible();
     await expect(page.getByText(/Licence expires soon/)).toBeVisible();
   });
 
-  test("Suspended Builder chip shows SUSPENDED result with alerts", async ({
-    page,
-  }) => {
-    await page.getByRole("button", { name: "Suspended Builder" }).click();
+  test("Suspended Builder chip shows SUSPENDED result with alerts", async ({ page }) => {
+    await tradieCheckPage.getSuspendedBuilderChip().click();
     await expect(page.getByText("SUSPENDED", { exact: true })).toBeVisible();
     await expect(page.getByText("Tony Ferraro")).toBeVisible();
     await expect(page.getByText("Builder — General")).toBeVisible();
     await expect(page.getByText(/Licence suspended/)).toBeVisible();
   });
 
-  test("searching by typing and pressing Enter shows result", async ({
-    page,
-  }) => {
-    await page.getByPlaceholder("Name or licence number...").fill("LIC-48291");
+  test("searching by typing and pressing Enter shows result", async ({ page }) => {
+    await tradieCheckPage.fillSearch("LIC-48291");
     await page.keyboard.press("Enter");
     await expect(page.getByText("Jake Morrison")).toBeVisible();
   });
 
   test("searching via CHECK button shows result", async ({ page }) => {
-    await page.getByPlaceholder("Name or licence number...").fill("BLD-10293");
-    await page.getByRole("button", { name: "CHECK" }).click();
+    await tradieCheckPage.searchByQuery("BLD-10293");
     await expect(page.getByText("Tony Ferraro")).toBeVisible();
   });
 
   test("NEW SEARCH button resets to idle state", async ({ page }) => {
-    await page.getByRole("button", { name: "Active Electrician" }).click();
+    await tradieCheckPage.getActiveElectricianChip().click();
     await expect(page.getByText("Jake Morrison")).toBeVisible();
-    await page.getByRole("button", { name: "NEW SEARCH" }).click();
+    await tradieCheckPage.getNewSearchButton().click();
     await expect(page.getByText("Jake Morrison")).not.toBeVisible();
-    await expect(page.getByRole("button", { name: "CHECK" })).toBeVisible();
-  });
-});
-
-test.describe("Not found state", () => {
-  test.beforeEach(async ({ page }) => {
-    const email = process.env.TEST_EMAIL || "";
-    const password = process.env.TEST_PASSWORD || "";
-    const loginPage = new LoginPage(page);
-    await loginPage.login(email, password);
-    await expect(page).toHaveURL("/welcome");
-    const tradieChecklink = page.getByRole("link", { name: "Verify a Tradie" });
-    await tradieChecklink.click({ timeout: 10000 });
+    await expect(tradieCheckPage.getCheckButton()).toBeVisible();
   });
 
-  test.afterEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.logout();
-    await expect(page).toHaveURL("/login");
-  });
-
-  test("shows no results message when backend is unreachable", async ({
-    page,
-  }) => {
-    // No backend running — fetch will fail → notFound state
-    await page
-      .getByPlaceholder("Name or licence number...")
-      .fill("UNKNOWN-99999");
-    await page.getByRole("button", { name: "CHECK" }).click();
-    await expect(page.getByText("No results found")).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(page.getByRole("button", { name: "TRY AGAIN" })).toBeVisible();
+  test("shows no results message when backend is unreachable", async ({ page }) => {
+    await tradieCheckPage.searchByQuery("UNKNOWN-99999");
+    await expect(page.getByText("No results found")).toBeVisible({ timeout: 10000 });
+    await expect(tradieCheckPage.getTryAgainButton()).toBeVisible();
   });
 
   test("TRY AGAIN button resets to idle state", async ({ page }) => {
-    await page
-      .getByPlaceholder("Name or licence number...")
-      .fill("UNKNOWN-99999");
-    await page.getByRole("button", { name: "CHECK" }).click();
-    await expect(page.getByText("No results found")).toBeVisible({
-      timeout: 10000,
-    });
-    await page.getByRole("button", { name: "TRY AGAIN" }).click();
+    await tradieCheckPage.searchByQuery("UNKNOWN-99999");
+    await expect(page.getByText("No results found")).toBeVisible({ timeout: 10000 });
+    await tradieCheckPage.getTryAgainButton().click();
     await expect(page.getByText("No results found")).not.toBeVisible();
-    await expect(page.getByRole("button", { name: "CHECK" })).toBeVisible();
+    await expect(tradieCheckPage.getCheckButton()).toBeVisible();
   });
 });

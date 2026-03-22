@@ -28,8 +28,39 @@ export class LoginPage extends BasePage {
   }
 
   async logout() {
-    // Implement logout functionality if needed
-    await this.page.getByRole("button", { name: "SIGN OUT" }).click();
+    await this.page.locator(LoginPageLocators.logoutButton).click();
+  }
+
+  getPasswordInput() {
+    return this.page.locator(LoginPageLocators.passwordInput);
+  }
+
+  getEyeToggle() {
+    return this.page.locator(LoginPageLocators.eyeToggle);
+  }
+
+  getForgotPasswordLink() {
+    return this.page.locator(LoginPageLocators.forgotPasswordLink);
+  }
+
+  getCreateAccountLink() {
+    return this.page.locator(LoginPageLocators.createAccountLink);
+  }
+
+  getGoogleAuthButton() {
+    return this.page.locator(LoginPageLocators.googleAuthButton);
+  }
+
+  getPageTitle() {
+    return this.page.locator(LoginPageLocators.pageTitle);
+  }
+
+  getSignInInsteadLink() {
+    return this.page.locator(LoginPageLocators.signInInsteadLink);
+  }
+
+  getBackToSignInLink() {
+    return this.page.locator(LoginPageLocators.backToSignInLink);
   }
 }
 export default LoginPage;
