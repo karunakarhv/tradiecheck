@@ -240,7 +240,7 @@ export default function HelpPage() {
         padding: "0 28px", height: "56px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
-        <a href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
+        <a href="/welcome" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{
             width: "28px", height: "28px", borderRadius: "7px",
             background: "linear-gradient(135deg, #00e87a22, #00e87a44)",

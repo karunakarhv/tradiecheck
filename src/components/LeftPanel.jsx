@@ -31,7 +31,7 @@ export default function LeftPanel({ query, setQuery, loading, onSearch }) {
       {/* Nav */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "52px" }}>
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <a href="/welcome" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px", color: "inherit" }}>
           <div style={{
             width: "32px", height: "32px", borderRadius: "8px",
             background: "linear-gradient(135deg, #00e87a22, #00e87a44)",
@@ -47,7 +47,7 @@ export default function LeftPanel({ query, setQuery, loading, onSearch }) {
           <span style={{ fontWeight: 900, fontSize: "16px", letterSpacing: "-0.03em" }}>
             Tradie<span style={{ color: "#00e87a" }}>Check</span>
           </span>
-        </div>
+        </a>
 
         {/* Nav right */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>

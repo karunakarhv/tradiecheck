@@ -353,7 +353,7 @@ export default function Welcome() {
         <div className="wc-body">
           {/* Top bar */}
           <div className="wc-topbar">
-            <div className="wc-logo">
+            <a href="/welcome" className="wc-logo" style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className="wc-logo-mark">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={GREEN} strokeWidth="2.5">
                   <circle cx="10" cy="10" r="6" />
@@ -362,7 +362,7 @@ export default function Welcome() {
                 </svg>
               </div>
               <div className="wc-logo-name">Tradie<span>Check</span></div>
-            </div>
+            </a>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <div className="wc-live">
                 <div className="wc-live-dot" />
