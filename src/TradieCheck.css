@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── Keyframes ── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Reset ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; min-height: 100vh; }
+input:focus { outline: none; }
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #222; }
+
+/* ── Layout: single centered column (no results) ── */
+.tc-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.tc-left {
+  padding: 40px 28px 48px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tc-left > * {
+  width: 100%;
+  max-width: 520px;
+}
+
+.tc-right {
+  display: none;
+}
+
+/* ── Results active: two-column layout ── */
+.tc-layout.tc-has-results {
+  max-width: 1200px;
+  grid-template-columns: 1fr;
+}
+
+.tc-layout.tc-has-results .tc-left {
+  border-bottom: 1px solid #111;
+  padding: 32px 28px 48px;
+  align-items: center;
+}
+
+.tc-layout.tc-has-results .tc-right {
+  display: block;
+  padding: 32px 28px 48px;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.3s ease;
+}
+
+@media (min-width: 900px) {
+  .tc-layout.tc-has-results {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tc-layout.tc-has-results .tc-left {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid #111;
+    border-bottom: none;
+    padding: 40px 40px 48px;
+    align-items: center;
+  }
+
+  .tc-layout.tc-has-results .tc-right {
+    padding: 40px 48px 48px;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 1280px) {
+  .tc-layout.tc-has-results .tc-left  { padding: 48px 48px 48px; }
+  .tc-layout.tc-has-results .tc-right { padding: 48px 64px 48px; }
+}

@@ -3,6 +3,8 @@ import express from 'express'
 import cors from 'cors'
 import fetch from 'node-fetch'
 import dotenv from 'dotenv'
+import path from 'path'
+import { fileURLToPath } from 'url'
 dotenv.config()
 
 const app = express()
@@ -61,6 +63,12 @@ async function getToken(apiKey, apiSecret) {
   return tokenCaches[apiKey].token
 }
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, 'dist')))
+
 // ── Proxy route — frontend calls this ───────────────────────────
 app.get('/api/check', async (req, res) => {
   const q = encodeURIComponent(req.query.query)
@@ -93,4 +101,20 @@ app.get('/api/check', async (req, res) => {
   res.json(payload)
 })
 
-app.listen(3001, () => console.log('TradieCheck API server running on http://localhost:3001'))
+// Catch-all to serve index.html for client-side routing
+app.use((req, res, next) => {
+  // If request is for a missing static asset (like old cached JS/CSS files), 
+  // do not return index.html to prevent confusing MIME type errors.
+  if (req.path.startsWith('/assets/')) {
+    return res.status(404).send('Asset not found')
+  }
+  
+  // Set no-cache headers for index.html so the browser always gets the latest file hashes
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('Expires', '0')
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
+
+const PORT = process.env.PORT || 8080
+app.listen(PORT, () => console.log(`TradieCheck server running on port ${PORT}`))

@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "gcp-build": "npm run build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "start": "node server.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
