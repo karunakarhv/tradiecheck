@@ -3,6 +3,7 @@ import { FLAGS } from "./lib/flags";
 import LogoutButton from './components/LogoutButton'
 
 const NAV_LINKS = [
+  { label: "Home", href: "/welcome" },
   { label: "Mobile", href: "/mobile" },
   { label: "Dashboard", href: "/dashboard" },
   ...(FLAGS.API_CONFIG ? [{ label: "API", href: "/api-config" }] : []),
