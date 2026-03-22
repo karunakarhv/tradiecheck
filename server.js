@@ -5,6 +5,7 @@ import fetch from 'node-fetch'
 import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { perMinuteLimiter, perHourLimiter } from './server/rateLimiter.js'
 dotenv.config()
 
 const app = express()
@@ -70,7 +71,7 @@ const __dirname = path.dirname(__filename)
 app.use(express.static(path.join(__dirname, 'dist')))
 
 // ── Proxy route — frontend calls this ───────────────────────────
-app.get('/api/check', async (req, res) => {
+app.get('/api/check', perMinuteLimiter, perHourLimiter, async (req, res) => {
   const q = encodeURIComponent(req.query.query)
 
   const [trades, hrw, asbestos] = await Promise.allSettled([

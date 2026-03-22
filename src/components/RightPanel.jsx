@@ -1,7 +1,7 @@
 import ResultCard from "./ResultCard";
 import ResultsList from "./ResultsList";
 
-export default function RightPanel({ loading, results, result, notFound, query, onSelect, onBack, onReset, onRetry }) {
+export default function RightPanel({ loading, results, result, notFound, rateLimited, query, onSelect, onBack, onReset, onRetry }) {
   return (
     <div className="tc-right">
 
@@ -43,6 +43,29 @@ export default function RightPanel({ loading, results, result, notFound, query, 
             color: "#555", fontSize: "12px", padding: "10px 24px",
             cursor: "pointer", letterSpacing: "0.06em",
           }}>TRY AGAIN</button>
+        </div>
+      )}
+
+      {/* Rate limited */}
+      {rateLimited && !loading && (
+        <div
+          id="rate-limit-banner"
+          style={{
+            animation: "slideUp 0.3s ease",
+            background: "#0d0d0d", border: "1px solid #3a1800",
+            borderRadius: "14px", padding: "40px 32px", textAlign: "center",
+          }}
+        >
+          <div style={{ fontSize: "40px", marginBottom: "16px" }}>⏱️</div>
+          <div style={{ fontWeight: 800, fontSize: "18px", marginBottom: "10px", color: "#ff6b35" }}>Too many requests</div>
+          <div style={{ color: "#555", fontSize: "13px", marginBottom: "24px", lineHeight: 1.6 }}>
+            You've made too many searches. Please wait a minute and try again.
+          </div>
+          <button onClick={onReset} style={{
+            background: "none", border: "1px solid #3a1800", borderRadius: "8px",
+            color: "#ff6b35", fontSize: "12px", padding: "10px 24px",
+            cursor: "pointer", letterSpacing: "0.06em",
+          }}>NEW SEARCH</button>
         </div>
       )}
 

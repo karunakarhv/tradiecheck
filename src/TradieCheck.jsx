@@ -11,6 +11,7 @@ export default function TradieCheck() {
     results,
     result,
     notFound, setNotFound,
+    rateLimited,
     inputRef,
     handleSearch,
     handleSelect,
@@ -18,7 +19,7 @@ export default function TradieCheck() {
     resetToList,
   } = useTradieSearch();
 
-  const hasResults = loading || !!results || !!result || notFound;
+  const hasResults = loading || !!results || !!result || notFound || rateLimited;
 
   const handleRetry = () => {
     setNotFound(false);
@@ -65,6 +66,7 @@ export default function TradieCheck() {
           results={results}
           result={result}
           notFound={notFound}
+          rateLimited={rateLimited}
           query={query}
           onSelect={(licence) => handleSelect(licence)}
           onBack={resetToList}

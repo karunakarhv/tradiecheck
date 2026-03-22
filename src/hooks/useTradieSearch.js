@@ -3,12 +3,13 @@ import { NSW_STATUS, parseNSWDate } from "../lib/nsw";
 import { MOCK_TRADES } from "../lib/mockData";
 
 export function useTradieSearch() {
-  const [query, setQuery]       = useState("");
-  const [loading, setLoading]   = useState(false);
-  const [results, setResults]   = useState(null); // { trades, hrw, asbestos }
-  const [result, setResult]     = useState(null);
-  const [notFound, setNotFound] = useState(false);
-  const inputRef                = useRef(null);
+  const [query, setQuery]           = useState("");
+  const [loading, setLoading]       = useState(false);
+  const [results, setResults]       = useState(null); // { trades, hrw, asbestos }
+  const [result, setResult]         = useState(null);
+  const [notFound, setNotFound]     = useState(false);
+  const [rateLimited, setRateLimited] = useState(false);
+  const inputRef                    = useRef(null);
 
   // Keeps the "LIVE" ticker refreshing every minute
   useEffect(() => {
@@ -28,10 +29,17 @@ export function useTradieSearch() {
 
     setLoading(true);
     setNotFound(false);
+    setRateLimited(false);
     setResult(null);
 
     try {
       const res  = await fetch(`/api/check?query=${encodeURIComponent(term)}`);
+
+      if (res.status === 429) {
+        setRateLimited(true);
+        return;
+      }
+
       const data = await res.json();
       const trades = Array.isArray(data.trades) ? data.trades : [];
 
@@ -84,6 +92,7 @@ export function useTradieSearch() {
     setResults(null);
     setQuery("");
     setNotFound(false);
+    setRateLimited(false);
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
@@ -99,6 +108,7 @@ export function useTradieSearch() {
     results,
     result,
     notFound, setNotFound,
+    rateLimited,
     inputRef,
     handleSearch,
     handleSelect,
