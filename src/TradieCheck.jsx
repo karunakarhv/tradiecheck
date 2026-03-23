@@ -12,14 +12,17 @@ export default function TradieCheck() {
     result,
     notFound, setNotFound,
     rateLimited,
+    bulkResults,
     inputRef,
     handleSearch,
     handleSelect,
+    handleBulkUpload,
     resetAll,
     resetToList,
+    resetBulk,
   } = useTradieSearch();
 
-  const hasResults = loading || !!results || !!result || notFound || rateLimited;
+  const hasResults = loading || !!results || !!result || notFound || rateLimited || !!bulkResults;
 
   const handleRetry = () => {
     setNotFound(false);
@@ -59,7 +62,9 @@ export default function TradieCheck() {
           setQuery={setQuery}
           loading={loading}
           onSearch={handleSearch}
+          onBulkUpload={handleBulkUpload}
           inputRef={inputRef}
+          isBulkLoading={bulkResults && bulkResults.some(r => r.status === 'loading' || r.status === 'pending')}
         />
         <RightPanel
           loading={loading}
@@ -67,10 +72,12 @@ export default function TradieCheck() {
           result={result}
           notFound={notFound}
           rateLimited={rateLimited}
+          bulkResults={bulkResults}
           query={query}
           onSelect={(licence) => handleSelect(licence)}
           onBack={resetToList}
           onReset={resetAll}
+          onResetBulk={resetBulk}
           onRetry={handleRetry}
         />
       </div>

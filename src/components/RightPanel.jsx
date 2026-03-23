@@ -1,7 +1,25 @@
 import ResultCard from "./ResultCard";
 import ResultsList from "./ResultsList";
+import BulkResultsList from "./BulkResultsList";
 
-export default function RightPanel({ loading, results, result, notFound, rateLimited, query, onSelect, onBack, onReset, onRetry }) {
+export default function RightPanel({ loading, results, result, notFound, rateLimited, bulkResults, query, onSelect, onBack, onReset, onResetBulk, onRetry }) {
+  const handleDownloadCSV = () => {
+    if (!bulkResults) return;
+    const header = "Query,Status,Result,LicenceNumber\n"
+    const rows = bulkResults.map(r => {
+      const status = r.status.toUpperCase();
+      const resultVal = r.data ? (r.data.status === "Active" ? "ACTIVE" : "SUSPENDED") : (r.status === "notFound" ? "NOT_FOUND" : "PENDING");
+      const licence = r.data ? r.data.licenceNumber : "";
+      return `"${r.query}","${status}","${resultVal}","${licence}"`;
+    }).join("\n");
+    const blob = new Blob([header + rows], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tradiecheck_report_${new Date().getTime()}.csv`;
+    a.click();
+  };
+
   return (
     <div className="tc-right">
 
@@ -18,11 +36,20 @@ export default function RightPanel({ loading, results, result, notFound, rateLim
       )}
 
       {/* Multiple results list */}
-      {results && !result && !loading && (
+      {results && !result && !loading && !bulkResults && (
         <ResultsList
           results={results.trades}
           onSelect={onSelect}
           onBack={onBack}
+        />
+      )}
+
+      {/* Bulk Results */}
+      {bulkResults && (
+        <BulkResultsList
+          results={bulkResults}
+          onReset={onResetBulk}
+          onDownload={handleDownloadCSV}
         />
       )}
 
@@ -75,7 +102,7 @@ export default function RightPanel({ loading, results, result, notFound, rateLim
       )}
 
       {/* Empty / idle state */}
-      {!loading && !results && !notFound && !result && (
+      {!loading && !results && !notFound && !result && !bulkResults && (
         <div style={{
           display: "flex", flexDirection: "column", alignItems: "center",
           justifyContent: "center", minHeight: "300px", opacity: 0.2,

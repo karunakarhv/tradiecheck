@@ -20,7 +20,7 @@ const NAV_LINKS = [
   { label: "Help",      href: "/help" },
 ];
 
-export default function LeftPanel({ query, setQuery, loading, onSearch }) {
+export default function LeftPanel({ query, setQuery, loading, onSearch, onBulkUpload, isBulkLoading }) {
   const navLinks = FLAGS.API_CONFIG
     ? [...NAV_LINKS.slice(0, 3), { label: "API", href: "/api-config" }, NAV_LINKS[3]]
     : NAV_LINKS;
@@ -128,6 +128,48 @@ export default function LeftPanel({ query, setQuery, loading, onSearch }) {
             ? <div style={{ width: "14px", height: "14px", border: "2px solid #333", borderTopColor: "#00e87a", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
             : "CHECK"}
         </button>
+      </div>
+
+      {/* Bulk Upload */}
+      <div style={{ marginBottom: "32px", display: "flex", gap: "10px", alignItems: "center" }}>
+        <input
+          type="file"
+          accept=".csv"
+          id="bulk-csv"
+          hidden
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) onBulkUpload(file);
+            e.target.value = null; // Reset for same file re-upload
+          }}
+        />
+        <button
+          onClick={() => document.getElementById("bulk-csv").click()}
+          disabled={loading || isBulkLoading}
+          style={{
+            background: "none", border: "1px dashed #333", borderRadius: "10px",
+            padding: "10px 16px", color: (loading || isBulkLoading) ? "#222" : "#888",
+            fontSize: "11px", fontWeight: 700, cursor: (loading || isBulkLoading) ? "not-allowed" : "pointer",
+            fontFamily: "'DM Mono', monospace", letterSpacing: "0.06em",
+            transition: "all 0.2s", display: "flex", alignItems: "center", gap: "8px",
+          }}
+          onMouseEnter={(e) => { if(!loading && !isBulkLoading) { e.target.style.borderColor = "#00e87a"; e.target.style.color = "#00e87a"; } }}
+          onMouseLeave={(e) => { if(!loading && !isBulkLoading) { e.target.style.borderColor = "#333"; e.target.style.color = "#888"; } }}
+        >
+          {isBulkLoading ? (
+            <div style={{ width: "12px", height: "12px", border: "2px solid #222", borderTopColor: "#00e87a", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+          ) : (
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+            </svg>
+          )}
+          {isBulkLoading ? "PROCESSING BATCH..." : "BULK CSV UPLOAD"}
+        </button>
+        {isBulkLoading && (
+          <span style={{ fontSize: "9px", color: "#00e87a", fontFamily: "'DM Mono', monospace", animation: "pulse 2s infinite" }}>
+            SEQUENTIAL CHECK ACTIVE
+          </span>
+        )}
       </div>
 
       {/* Demo chips */}

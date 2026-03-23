@@ -9,6 +9,7 @@ export function useTradieSearch() {
   const [result, setResult]         = useState(null);
   const [notFound, setNotFound]     = useState(false);
   const [rateLimited, setRateLimited] = useState(false);
+  const [bulkResults, setBulkResults] = useState(null); // Array of { query, status, data }
   const inputRef                    = useRef(null);
 
   // Keeps the "LIVE" ticker refreshing every minute
@@ -102,6 +103,64 @@ export function useTradieSearch() {
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
+  const handleBulkUpload = async (file) => {
+    if (!file) return;
+    const text = await file.text();
+    const rows = text.split(/\r?\n/).map(r => r.trim()).filter(r => r && !r.startsWith("#"));
+    const queries = [...new Set(rows)]; // Unique queries
+
+    setBulkResults(queries.map(q => ({ query: q, status: "pending", data: null })));
+    setResult(null);
+    setResults(null);
+
+    for (let i = 0; i < queries.length; i++) {
+      const q = queries[i];
+      setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "loading" } : item));
+
+      try {
+        const res = await fetch(`/api/check?query=${encodeURIComponent(q)}`);
+        if (res.status === 429) {
+          setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "rateLimited" } : item));
+          // Wait 5 seconds on rate limit and retry or stop? 
+          // For UX, let's wait 5s and try once more, then skip if still failing.
+          await new Promise(r => setTimeout(r, 5000));
+          const resRetry = await fetch(`/api/check?query=${encodeURIComponent(q)}`);
+          if (resRetry.status === 429) {
+             setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "rateLimited" } : item));
+             continue; 
+          }
+          const data = await resRetry.json();
+          const trades = Array.isArray(data.trades) ? data.trades : [];
+          setBulkResults(prev => prev.map((item, idx) => idx === i ? {
+            ...item,
+            status: trades.length > 0 ? "success" : "notFound",
+            data: trades[0] || null
+          } : item));
+        } else {
+          const data = await res.json();
+          const trades = Array.isArray(data.trades) ? data.trades : [];
+          setBulkResults(prev => prev.map((item, idx) => idx === i ? {
+            ...item,
+            status: trades.length > 0 ? "success" : "notFound",
+            data: trades[0] || null
+          } : item));
+        }
+      } catch (err) {
+        setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "error" } : item));
+      }
+
+      // Add a small delay between requests to stay under 20/min
+      if (i < queries.length - 1) {
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
+  };
+
+  const resetBulk = () => {
+    setBulkResults(null);
+    resetAll();
+  };
+
   return {
     query, setQuery,
     loading,
@@ -109,10 +168,13 @@ export function useTradieSearch() {
     result,
     notFound, setNotFound,
     rateLimited,
+    bulkResults,
     inputRef,
     handleSearch,
     handleSelect,
+    handleBulkUpload,
     resetAll,
     resetToList,
+    resetBulk,
   };
 }
