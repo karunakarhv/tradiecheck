@@ -1,6 +1,7 @@
 import ResultCard from "./ResultCard";
 import ResultsList from "./ResultsList";
 import BulkResultsList from "./BulkResultsList";
+import { getVerifiableStatus } from "../lib/nsw";
 
 export default function RightPanel({ loading, results, result, notFound, rateLimited, bulkResults, query, onSelect, onBack, onReset, onResetBulk, onRetry }) {
   const handleDownloadCSV = () => {
@@ -8,7 +9,7 @@ export default function RightPanel({ loading, results, result, notFound, rateLim
     const header = "Query,Status,Result,LicenceNumber\n"
     const rows = bulkResults.map(r => {
       const status = r.status.toUpperCase();
-      const resultVal = r.data ? (r.data.status === "Active" ? "ACTIVE" : "SUSPENDED") : (r.status === "notFound" ? "NOT_FOUND" : "PENDING");
+      const resultVal = r.data ? getVerifiableStatus(r.data.status) : (r.status === "notFound" ? "NOT_FOUND" : "PENDING");
       const licence = r.data ? r.data.licenceNumber : "";
       return `"${r.query}","${status}","${resultVal}","${licence}"`;
     }).join("\n");
