@@ -1,4 +1,5 @@
 import StatusBadge from "./StatusBadge";
+import { getVerifiableStatus } from "../lib/nsw";
 
 export default function BulkResultsList({ results, onReset, onDownload }) {
   const completed = results.filter(r => r.status !== "pending" && r.status !== "loading").length;
@@ -81,7 +82,7 @@ export default function BulkResultsList({ results, onReset, onDownload }) {
                 </td>
                 <td style={{ padding: "12px 16px" }}>
                   {res.data ? (
-                    <StatusBadge status={res.data.status === "Active" ? "ACTIVE" : "SUSPENDED"} />
+                    <StatusBadge status={getVerifiableStatus(res.data.status)} />
                   ) : res.status === "notFound" ? (
                     <span style={{ color: "#333", fontSize: "11px" }}>NOT FOUND</span>
                   ) : res.status === "rateLimited" ? (

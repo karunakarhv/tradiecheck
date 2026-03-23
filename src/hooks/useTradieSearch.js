@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { NSW_STATUS, parseNSWDate } from "../lib/nsw";
+import { NSW_STATUS, parseNSWDate, getVerifiableStatus } from "../lib/nsw";
 import { MOCK_TRADES } from "../lib/mockData";
 
 export function useTradieSearch() {
@@ -62,7 +62,7 @@ export function useTradieSearch() {
   const handleSelect = (licence, data) => {
     const hrw      = data?.highRiskWork ?? results?.hrw;
     const asbestos = data?.asbestos     ?? results?.asbestos;
-    const status   = NSW_STATUS[licence.status] || "SUSPENDED";
+    const status   = getVerifiableStatus(licence.status);
     const expiryISO = parseNSWDate(licence.expiryDate);
     const isExpired = expiryISO && new Date(expiryISO) < new Date();
 

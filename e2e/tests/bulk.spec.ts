@@ -16,8 +16,8 @@ test.describe('Bulk CSV Upload', () => {
     await expect(page).toHaveURL(/.*welcome.*/);
 
     // Mock API
-    await page.route('**/api/check?query=LIC-48291', async (route) => {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ trades: [{ licensee: 'Jake Morrison', licenceNumber: 'LIC-48291', status: 'Active' }] }) });
+    await page.route('**/api/check?query=481998C', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ trades: [{ licensee: 'Pristine Pipes', licenceNumber: '481998C', status: 'Current' }] }) });
     });
     await page.route('**/api/check?query=PLB-77432', async (route) => {
       await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ trades: [{ licensee: 'Sandra Okafor', licenceNumber: 'PLB-77432', status: 'Active' }] }) });
@@ -31,8 +31,8 @@ test.describe('Bulk CSV Upload', () => {
     await expect(bulkButton).toBeVisible();
 
     // Upload CSV
-    const filePath = path.join('/tmp', 'test_tradies.csv');
-    fs.writeFileSync(filePath, 'LIC-48291\nPLB-77432');
+    const filePath = path.join('/tmp', 'test_tradies_fix.csv');
+    fs.writeFileSync(filePath, '481998C\nPLB-77432');
     
     const fileChooserPromise = page.waitForEvent('filechooser');
     await bulkButton.click();
@@ -47,8 +47,13 @@ test.describe('Bulk CSV Upload', () => {
     await expect(page.locator('text=2 / 2 Verified')).toBeVisible();
 
     // Check results in table
-    await expect(page.locator('tr:has-text("LIC-48291")')).toBeVisible();
+    await expect(page.locator('tr:has-text("481998C")')).toBeVisible();
     await expect(page.locator('tr:has-text("PLB-77432")')).toBeVisible();
+    
+    // Verify 481998C is ACTIVE (not SUSPENDED)
+    const row = page.locator('tr:has-text("481998C")');
+    await expect(row.locator('text=ACTIVE')).toBeVisible();
+
     await expect(page.locator('text=EXPORT CSV')).toBeVisible();
   });
 });
