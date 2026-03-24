@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { MOCK_TRADES } from '../mockData'
 
 describe('MOCK_TRADES', () => {
-  it('contains three demo records', () => {
-    expect(Object.keys(MOCK_TRADES)).toHaveLength(3)
+  it('contains demo records for all states (8 total)', () => {
+    expect(Object.keys(MOCK_TRADES)).toHaveLength(8)
   })
 
   it('LIC-48291 is an ACTIVE electrician', () => {
@@ -38,5 +38,13 @@ describe('MOCK_TRADES', () => {
       expect(record).toHaveProperty('expiry')
       expect(record).toHaveProperty('suburb')
     }
+  })
+
+  it('contains records for all other states', () => {
+    expect(MOCK_TRADES['QLD-55221'].issuer).toBe('QBCC Queensland')
+    expect(MOCK_TRADES['WA-88331'].issuer).toBe('Building Services WA')
+    expect(MOCK_TRADES['SA-11223'].issuer).toBe('CBS South Australia')
+    expect(MOCK_TRADES['ACT-99001'].issuer).toBe('Access Canberra')
+    expect(MOCK_TRADES['TAS-44556'].issuer).toBe('CBOS Tasmania')
   })
 })
