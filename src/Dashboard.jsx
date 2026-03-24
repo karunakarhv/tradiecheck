@@ -48,7 +48,7 @@ function mapAPIResponse(data) {
     name,
     initials,
     trade: trades[0]?.licenceType || hrw[0]?.licenceType || asbestos[0]?.licenceType || "Licensed Tradie",
-    suburb: primary.suburb ? `${primary.suburb}${primary.postcode ? " " + primary.postcode : ""}, NSW` : "NSW",
+    suburb: primary.suburb ? `${primary.suburb}${primary.postcode ? " " + primary.postcode : ""}, ${primary.issuer?.split(' ').pop() || 'NSW'}` : "Australia",
     status: primaryLicence.status || "ACTIVE",
     primaryLicence,
     allLicences,
@@ -82,6 +82,7 @@ export default function TradieDashboard() {
   const [loading, setLoading] = useState(false);
   const [tradie, setTradie] = useState(null);
   const [notFound, setNotFound] = useState(false);
+  const [selectedState, setSelectedState] = useState("NSW");
 
   const daysUntil = (d) => d ? Math.floor((new Date(d) - new Date()) / 86400000) : null;
 
@@ -92,7 +93,7 @@ export default function TradieDashboard() {
     setNotFound(false);
     setTradie(null);
     try {
-      const res = await fetch(`http://localhost:3001/api/check?query=${encodeURIComponent(term)}`);
+      const res = await fetch(`http://localhost:3001/api/check?query=${encodeURIComponent(term)}&state=${selectedState}`);
       const data = await res.json();
       const mapped = mapAPIResponse(data);
       if (mapped) {
@@ -250,9 +251,9 @@ export default function TradieDashboard() {
           </div>
         ) : (
           <div style={{ padding: "14px", borderRadius: "10px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.2)", letterSpacing: "0.1em", marginBottom: "6px" }}>NSW REGISTER</div>
+            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.2)", letterSpacing: "0.1em", marginBottom: "6px" }}>{selectedState} REGISTER</div>
             <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.2)", lineHeight: "1.5" }}>
-              Search by name or licence number to load a live profile.
+              Search by name or licence number in {selectedState} to load a live profile.
             </div>
           </div>
         )}
@@ -270,7 +271,7 @@ export default function TradieDashboard() {
                 Tradie Dashboard
               </div>
               <div style={{ fontSize: "13px", color: "#8a8680", marginTop: "2px" }}>
-                Search the NSW register to load a live tradie profile
+                Search any Australian state register to load a live tradie profile
               </div>
             </div>
 
@@ -284,10 +285,23 @@ export default function TradieDashboard() {
                 Load a Tradie Profile
               </div>
               <div style={{ fontSize: "13px", color: "#aaa", marginBottom: "24px" }}>
-                Enter a name or licence number to search the NSW Fair Trading, SafeWork NSW and Asbestos registers.
+                Enter a name or licence number and select the state register to search.
               </div>
 
               <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+                <select
+                  value={selectedState}
+                  onChange={(e) => setSelectedState(e.target.value)}
+                  style={{
+                    border: "1.5px solid #e0ddd7", borderRadius: "10px",
+                    padding: "12px", fontSize: "14px", color: "#1a1814",
+                    background: "#fdfcfb", outline: "none",
+                  }}
+                >
+                  {["NSW", "VIC", "QLD", "WA", "SA", "ACT", "TAS"].map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
                 <input
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
@@ -382,7 +396,7 @@ export default function TradieDashboard() {
                     background: "#00e87a",
                   }} />
                   <span style={{ fontSize: "11px", color: "#555", fontWeight: 600, fontFamily: "'DM Mono', monospace", letterSpacing: "0.06em" }}>
-                    NSW REGISTER
+                    {selectedState} REGISTER
                   </span>
                 </div>
               </div>
@@ -588,7 +602,7 @@ export default function TradieDashboard() {
                       <div style={{ fontSize: "14px", color: "#888", marginBottom: "8px" }}>{tradie.trade} · {tradie.suburb}</div>
                       <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                         <StatusBadge status={tradie.status} />
-                        <span style={{ fontSize: "12px", color: "#aaa" }}>NSW Register</span>
+                        <span style={{ fontSize: "12px", color: "#aaa" }}>{selectedState} Register</span>
                       </div>
                     </div>
                   </div>

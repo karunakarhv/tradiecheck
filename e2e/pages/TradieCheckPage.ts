@@ -14,6 +14,10 @@ export class TradieCheckPage extends BasePage {
     return this.page.getByPlaceholder(TradieCheckLocators.searchInput);
   }
 
+  getStateSelect() {
+    return this.page.locator("select");
+  }
+
   getCheckButton() {
     return this.page.getByRole("button", { name: TradieCheckLocators.checkButton });
   }

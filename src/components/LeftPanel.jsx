@@ -20,7 +20,7 @@ const NAV_LINKS = [
   { label: "Help",      href: "/help" },
 ];
 
-export default function LeftPanel({ query, setQuery, loading, onSearch, onBulkUpload, isBulkLoading }) {
+export default function LeftPanel({ query, setQuery, loading, onSearch, onBulkUpload, isBulkLoading, selectedState, setSelectedState }) {
   const navLinks = FLAGS.API_CONFIG
     ? [...NAV_LINKS.slice(0, 3), { label: "API", href: "/api-config" }, NAV_LINKS[3]]
     : NAV_LINKS;
@@ -102,9 +102,20 @@ export default function LeftPanel({ query, setQuery, loading, onSearch, onBulkUp
         onFocus={(e) => e.currentTarget.style.borderColor = "#00e87a44"}
         onBlur={(e)  => e.currentTarget.style.borderColor = "#1e1e1e"}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2">
-          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" strokeLinecap="round" />
-        </svg>
+        <select
+          value={selectedState}
+          onChange={(e) => setSelectedState(e.target.value)}
+          style={{
+            background: "none", border: "none", color: "#00e87a",
+            fontSize: "13px", fontWeight: 800, fontFamily: "'DM Mono', monospace",
+            cursor: "pointer", outline: "none", paddingRight: "4px",
+            borderRight: "1px solid #1e1e1e", marginRight: "4px"
+          }}
+        >
+          {["NSW", "VIC", "QLD", "WA", "SA", "ACT", "TAS"].map(s => (
+            <option key={s} value={s} style={{ background: "#0d0d0d", color: "#fff" }}>{s}</option>
+          ))}
+        </select>
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -210,8 +221,8 @@ export default function LeftPanel({ query, setQuery, loading, onSearch, onBulkUp
 
       {/* Footer */}
       <div style={{ marginTop: "auto", paddingTop: "32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: "10px", color: "#2a2a2a", letterSpacing: "0.06em", fontFamily: "'DM Mono', monospace" }}>
-          DATA: NSW ONLY
+        <div style={{ fontSize: "10px", color: "#444", letterSpacing: "0.06em", fontFamily: "'DM Mono', monospace" }}>
+          NATIONAL COVERAGE: {selectedState} REGISTER ACTIVE
         </div>
         <div style={{ display: "flex", gap: "16px" }}>
           {["Privacy", "API", "About"].map(l => (

@@ -9,6 +9,7 @@ export function useTradieSearch() {
   const [result, setResult]         = useState(null);
   const [notFound, setNotFound]     = useState(false);
   const [rateLimited, setRateLimited] = useState(false);
+  const [selectedState, setSelectedState] = useState("NSW");
   const [bulkResults, setBulkResults] = useState(null); // Array of { query, status, data }
   const inputRef                    = useRef(null);
 
@@ -34,7 +35,7 @@ export function useTradieSearch() {
     setResult(null);
 
     try {
-      const res  = await fetch(`/api/check?query=${encodeURIComponent(term)}`);
+      const res  = await fetch(`/api/check?query=${encodeURIComponent(term)}&state=${selectedState}`);
 
       if (res.status === 429) {
         setRateLimited(true);
@@ -76,7 +77,7 @@ export function useTradieSearch() {
       status,
       licence:        licence.licenceNumber,
       expiry:         expiryISO,
-      issuer:         "NSW Fair Trading",
+      issuer:         licence.issuer || (selectedState === "NSW" ? "NSW Fair Trading" : `${selectedState} Authority`),
       since:          "—",
       insuranceValid: false,
       highRiskWork:   Array.isArray(hrw)      && hrw.length > 0,
@@ -118,13 +119,13 @@ export function useTradieSearch() {
       setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "loading" } : item));
 
       try {
-        const res = await fetch(`/api/check?query=${encodeURIComponent(q)}`);
+        const res = await fetch(`/api/check?query=${encodeURIComponent(q)}&state=${selectedState}`);
         if (res.status === 429) {
           setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "rateLimited" } : item));
           // Wait 5 seconds on rate limit and retry or stop? 
           // For UX, let's wait 5s and try once more, then skip if still failing.
           await new Promise(r => setTimeout(r, 5000));
-          const resRetry = await fetch(`/api/check?query=${encodeURIComponent(q)}`);
+          const resRetry = await fetch(`/api/check?query=${encodeURIComponent(q)}&state=${selectedState}`);
           if (resRetry.status === 429) {
              setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "rateLimited" } : item));
              continue; 
@@ -168,6 +169,7 @@ export function useTradieSearch() {
     result,
     notFound, setNotFound,
     rateLimited,
+    selectedState, setSelectedState,
     bulkResults,
     inputRef,
     handleSearch,

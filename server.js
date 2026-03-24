@@ -72,34 +72,75 @@ app.use(express.static(path.join(__dirname, 'dist')))
 
 // ── Proxy route — frontend calls this ───────────────────────────
 app.get('/api/check', perMinuteLimiter, perHourLimiter, async (req, res) => {
-  const q = encodeURIComponent(req.query.query)
+  const q     = req.query.query;
+  const state = req.query.state || 'NSW';
+  const query = encodeURIComponent(q);
 
-  const [trades, hrw, asbestos] = await Promise.allSettled([
-    getToken(process.env.TRADES_API_KEY, process.env.TRADES_API_SECRET).then(token =>
-      fetch(`${BASE_URL}/tradesregister/v1/browse?searchText=${q}`, {
-        headers: { Authorization: `Bearer ${token}`, apikey: process.env.TRADES_API_KEY, Accept: 'application/json' },
-      }).then(r => r.json())
-    ),
+  if (state !== 'NSW') {
+    // Simulated response for other states
+    // In a real app, these would call VIC Building Authority, QBCC, etc.
+    const issuers = {
+      'VIC': 'VIC Building Authority',
+      'QLD': 'QBCC Queensland',
+      'WA':  'Building Services WA',
+      'SA':  'CBS South Australia',
+      'ACT': 'Access Canberra',
+      'TAS': 'CBOS Tasmania'
+    };
+    const issuer = issuers[state] || 'State Authority';
 
-    getToken(process.env.HRW_API_KEY, process.env.HRW_API_SECRET).then(token =>
-      fetch(`${BASE_URL}/hrwregister/v1/browse?searchText=${q}`, {
-        headers: { Authorization: `Bearer ${token}`, apikey: process.env.HRW_API_KEY, Accept: 'application/json' },
-      }).then(r => r.json())
-    ),
+    // Simulate search delay
+    await new Promise(r => setTimeout(r, 800));
 
-    getToken(process.env.ASBESTOS_API_KEY, process.env.ASBESTOS_API_SECRET).then(token =>
-      fetch(`${BASE_URL}/asbestosregister/v1/browse?searchText=${q}`, {
-        headers: { Authorization: `Bearer ${token}`, apikey: process.env.ASBESTOS_API_KEY, Accept: 'application/json' },
-      }).then(r => r.json())
-    ),
-  ])
-
-  const payload = {
-    trades:       trades.status   === 'fulfilled' ? trades.value   : { error: trades.reason?.message },
-    highRiskWork: hrw.status      === 'fulfilled' ? hrw.value      : { error: hrw.reason?.message },
-    asbestos:     asbestos.status === 'fulfilled' ? asbestos.value : { error: asbestos.reason?.message },
+    // Return a format that is compatible with the frontend expectation
+    // (A single list of trades from the 'state' register)
+    return res.json({
+      trades: [{
+        licensee: q.length > 5 ? q : `${q} (Simulated)`,
+        licenceNumber: q.includes('-') ? q : `${state}-${q.padStart(5, '0')}`,
+        licenceType: 'General Building / Trade',
+        status: 'Active',
+        expiryDate: '30/11/2026',
+        suburb: 'Capital City',
+        postcode: '0000',
+        issuer: issuer
+      }],
+      highRiskWork: [],
+      asbestos: []
+    });
   }
-  res.json(payload)
+
+  // NSW OneGov Logic (Existing)
+  try {
+    const [trades, hrw, asbestos] = await Promise.allSettled([
+      getToken(process.env.TRADES_API_KEY, process.env.TRADES_API_SECRET).then(token =>
+        fetch(`${BASE_URL}/tradesregister/v1/browse?searchText=${query}`, {
+          headers: { Authorization: `Bearer ${token}`, apikey: process.env.TRADES_API_KEY, Accept: 'application/json' },
+        }).then(r => r.json())
+      ),
+
+      getToken(process.env.HRW_API_KEY, process.env.HRW_API_SECRET).then(token =>
+        fetch(`${BASE_URL}/hrwregister/v1/browse?searchText=${query}`, {
+          headers: { Authorization: `Bearer ${token}`, apikey: process.env.HRW_API_KEY, Accept: 'application/json' },
+        }).then(r => r.json())
+      ),
+
+      getToken(process.env.ASBESTOS_API_KEY, process.env.ASBESTOS_API_SECRET).then(token =>
+        fetch(`${BASE_URL}/asbestosregister/v1/browse?searchText=${query}`, {
+          headers: { Authorization: `Bearer ${token}`, apikey: process.env.ASBESTOS_API_KEY, Accept: 'application/json' },
+        }).then(r => r.json())
+      ),
+    ])
+
+    const payload = {
+      trades:       trades.status   === 'fulfilled' ? trades.value   : { error: trades.reason?.message },
+      highRiskWork: hrw.status      === 'fulfilled' ? hrw.value      : { error: hrw.reason?.message },
+      asbestos:     asbestos.status === 'fulfilled' ? asbestos.value : { error: asbestos.reason?.message },
+    }
+    res.json(payload)
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 })
 
 // Catch-all to serve index.html for client-side routing

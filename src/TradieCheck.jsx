@@ -11,7 +11,7 @@ export default function TradieCheck() {
     results,
     result,
     notFound, setNotFound,
-    rateLimited,
+    selectedState, setSelectedState,
     bulkResults,
     inputRef,
     handleSearch,
@@ -61,6 +61,8 @@ export default function TradieCheck() {
           query={query}
           setQuery={setQuery}
           loading={loading}
+          selectedState={selectedState}
+          setSelectedState={setSelectedState}
           onSearch={handleSearch}
           onBulkUpload={handleBulkUpload}
           inputRef={inputRef}
