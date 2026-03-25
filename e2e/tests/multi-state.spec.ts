@@ -12,6 +12,7 @@ test.describe("Multi-State Support", () => {
     const password = process.env.TEST_PASSWORD || "";
     const loginPage = new LoginPage(page);
     await loginPage.login(email, password);
+    await expect(page).toHaveURL("/welcome");
     tradieCheckPage = new TradieCheckPage(page);
     await tradieCheckPage.visit();
   });
@@ -19,11 +20,15 @@ test.describe("Multi-State Support", () => {
   test("can select different states and search", async ({ page }) => {
     // Default is NSW
     await expect(tradieCheckPage.getStateSelect()).toHaveValue("NSW");
-    await expect(page.getByText("NATIONAL COVERAGE: NSW REGISTER ACTIVE")).toBeVisible();
+    await expect(
+      page.getByText("NATIONAL COVERAGE: NSW REGISTER ACTIVE"),
+    ).toBeVisible();
 
     // Select Victoria
     await tradieCheckPage.getStateSelect().selectOption("VIC");
-    await expect(page.getByText("NATIONAL COVERAGE: VIC REGISTER ACTIVE")).toBeVisible();
+    await expect(
+      page.getByText("NATIONAL COVERAGE: VIC REGISTER ACTIVE"),
+    ).toBeVisible();
 
     // Search for a Victorian license (mocked)
     await tradieCheckPage.searchByQuery("BLD-10293");
@@ -41,6 +46,8 @@ test.describe("Multi-State Support", () => {
   test("bulk upload uses selected state", async ({ page }) => {
     // This is a partial test as bulk upload involves file system
     await tradieCheckPage.getStateSelect().selectOption("WA");
-    await expect(page.getByText("NATIONAL COVERAGE: WA REGISTER ACTIVE")).toBeVisible();
+    await expect(
+      page.getByText("NATIONAL COVERAGE: WA REGISTER ACTIVE"),
+    ).toBeVisible();
   });
 });

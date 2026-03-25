@@ -11,6 +11,7 @@ export default function TradieCheck() {
     results,
     result,
     notFound, setNotFound,
+    rateLimited,
     selectedState, setSelectedState,
     bulkResults,
     inputRef,
