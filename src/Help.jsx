@@ -203,7 +203,7 @@ function FAQItem({ q, a }) {
 export default function HelpPage() {
   return (
     <div style={{
-      minHeight: "100vh",
+      minHeight: "100dvh",
       background: "#050505",
       fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
       color: "#fff",
@@ -211,7 +211,7 @@ export default function HelpPage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { width: 100%; min-height: 100vh; }
+        html, body { width: 100%; min-height: 100dvh; }
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #0a0a0a; } ::-webkit-scrollbar-thumb { background: #222; }
         .help-layout { display: grid; grid-template-columns: 1fr; gap: 0; }
         .help-sidebar { display: none; }

@@ -482,7 +482,7 @@ export default function NSWAPIConfig() {
 
   return (
     <div style={{
-      minHeight: "100vh", background: "#f0ede8",
+      minHeight: "100dvh", background: "#f0ede8",
       fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
     }}>
       <style>{`

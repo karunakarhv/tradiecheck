@@ -33,7 +33,7 @@ export default function TradieCheck() {
 
   return (
     <div style={{
-      minHeight: "100vh",
+      minHeight: "100dvh",
       background: "#050505",
       fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
       color: "#fff",

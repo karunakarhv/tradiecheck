@@ -66,7 +66,7 @@ const styles = `
   }
 
   .wc-root {
-    min-height: 100vh;
+    min-height: 100dvh;
     background: #050505;
     color: #fff;
     font-family: 'DM Sans', sans-serif;

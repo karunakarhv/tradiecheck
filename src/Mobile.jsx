@@ -399,7 +399,7 @@ export default function MobileApp() {
 
   return (
     <div style={{
-      minHeight: "100vh",
+      minHeight: "100dvh",
       background: "linear-gradient(145deg, #e8e4de 0%, #d4d0ca 100%)",
       display: "flex", alignItems: "center", justifyContent: "center",
       fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",

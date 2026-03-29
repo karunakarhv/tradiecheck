@@ -19,7 +19,7 @@
 
 /* ── Reset ── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; min-height: 100vh; }
+html, body { width: 100%; min-height: 100dvh; }
 input:focus { outline: none; }
 ::-webkit-scrollbar       { width: 4px; }
 ::-webkit-scrollbar-track { background: #0a0a0a; }
@@ -29,7 +29,7 @@ input:focus { outline: none; }
 .tc-layout {
   display: grid;
   grid-template-columns: 1fr;
-  min-height: 100vh;
+  min-height: 100dvh;
   max-width: 680px;
   margin: 0 auto;
   width: 100%;
@@ -81,7 +81,7 @@ input:focus { outline: none; }
   .tc-layout.tc-has-results .tc-left {
     position: sticky;
     top: 0;
-    height: 100vh;
+    height: 100dvh;
     overflow-y: auto;
     border-right: 1px solid #111;
     border-bottom: none;

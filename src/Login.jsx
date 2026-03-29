@@ -24,7 +24,7 @@ const styles = `
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   .gl-page {
-    min-height: 100vh;
+    min-height: 100dvh;
     background: #f1f3f4;
     display: flex;
     flex-direction: column;

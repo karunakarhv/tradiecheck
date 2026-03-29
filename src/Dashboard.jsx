@@ -123,7 +123,7 @@ export default function TradieDashboard() {
 
   return (
     <div style={{
-      minHeight: "100vh",
+      minHeight: "100dvh",
       background: "#f0ede8",
       fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
       display: "flex",
@@ -150,7 +150,7 @@ export default function TradieDashboard() {
         background: "#1a1814",
         padding: "24px 16px",
         display: "flex", flexDirection: "column", gap: "8px",
-        minHeight: "100vh",
+        minHeight: "100dvh",
       }}>
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 12px", marginBottom: "24px" }}>
@@ -260,7 +260,7 @@ export default function TradieDashboard() {
       </div>
 
       {/* MAIN */}
-      <div style={{ flex: 1, padding: "32px", overflowY: "auto", maxHeight: "100vh" }}>
+      <div style={{ flex: 1, padding: "32px", overflowY: "auto", maxHeight: "100dvh" }}>
 
         {/* ── SEARCH / LOAD SCREEN ─────────────────────────────── */}
         {!tradie && (
