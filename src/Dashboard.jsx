@@ -122,12 +122,7 @@ export default function TradieDashboard() {
   ];
 
   return (
-    <div style={{
-      minHeight: "100dvh",
-      background: "#f0ede8",
-      fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
-      display: "flex",
-    }}>
+    <div className="dashboard-layout">
       {/* Fixed sign out button — always visible, top-right */}
       <div style={{ position: "fixed", top: "16px", right: "20px", zIndex: 100 }}>
         <LogoutButton variant="dark" />
@@ -142,16 +137,75 @@ export default function TradieDashboard() {
         ::-webkit-scrollbar-thumb { background: #d0cdc8; border-radius: 2px; }
         button { font-family: inherit; }
         input { font-family: inherit; }
+        .dashboard-layout {
+          min-height: 100dvh;
+          background: #f0ede8;
+          font-family: 'DM Sans', 'Helvetica Neue', sans-serif;
+          display: flex;
+          flex-direction: column;
+        }
+        .dashboard-sidebar {
+          width: 100%;
+          background: #1a1814;
+          padding: 24px 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .dashboard-main {
+          flex: 1;
+          padding: 16px;
+        }
+        .dashboard-kpi-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 14px;
+          margin-bottom: 20px;
+        }
+        .dashboard-profile-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+        .dashboard-header-row {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          align-items: flex-start;
+          margin-bottom: 28px;
+        }
+        .dashboard-search-inputs {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-bottom: 16px;
+        }
+        @media (min-width: 768px) {
+          .dashboard-layout { flex-direction: row; }
+          .dashboard-sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            min-height: 100dvh;
+          }
+          .dashboard-main {
+            padding: 32px;
+            overflow-y: auto;
+            max-height: 100dvh;
+          }
+          .dashboard-kpi-grid { grid-template-columns: repeat(3, 1fr); }
+          .dashboard-profile-grid { grid-template-columns: 1fr 1fr; }
+          .dashboard-profile-grid > div:first-child { grid-column: span 2; }
+          .dashboard-header-row {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+          }
+          .dashboard-search-inputs { flex-direction: row; }
+        }
       `}</style>
 
       {/* SIDEBAR */}
-      <div style={{
-        width: "240px", flexShrink: 0,
-        background: "#1a1814",
-        padding: "24px 16px",
-        display: "flex", flexDirection: "column", gap: "8px",
-        minHeight: "100dvh",
-      }}>
+      <div className="dashboard-sidebar">
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 12px", marginBottom: "24px" }}>
           <div style={{
@@ -260,7 +314,7 @@ export default function TradieDashboard() {
       </div>
 
       {/* MAIN */}
-      <div style={{ flex: 1, padding: "32px", overflowY: "auto", maxHeight: "100dvh" }}>
+      <div className="dashboard-main">
 
         {/* ── SEARCH / LOAD SCREEN ─────────────────────────────── */}
         {!tradie && (
@@ -288,7 +342,7 @@ export default function TradieDashboard() {
                 Enter a name or licence number and select the state register to search.
               </div>
 
-              <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+              <div className="dashboard-search-inputs">
                 <select
                   value={selectedState}
                   onChange={(e) => setSelectedState(e.target.value)}
@@ -376,7 +430,7 @@ export default function TradieDashboard() {
         {tradie && (
           <>
             {/* Header */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px" }}>
+            <div className="dashboard-header-row">
               <div>
                 <div style={{ fontSize: "22px", fontWeight: 800, color: "#1a1814", letterSpacing: "-0.02em" }}>
                   {tabs.find(t => t.id === tab)?.label}
@@ -406,7 +460,7 @@ export default function TradieDashboard() {
             {tab === "overview" && (
               <div style={{ animation: "fadeIn 0.3s ease" }}>
                 {/* KPI Row */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "14px", marginBottom: "20px" }}>
+                <div className="dashboard-kpi-grid">
                   {[
                     {
                       label: "Total Licences",
@@ -583,11 +637,11 @@ export default function TradieDashboard() {
             {/* ── PROFILE TAB ──────────────────────────────────── */}
             {tab === "profile" && (
               <div style={{ animation: "fadeIn 0.3s ease" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                <div className="dashboard-profile-grid">
                   {/* Banner */}
                   <div style={{
                     background: "#fff", borderRadius: "14px", padding: "28px",
-                    border: "1px solid #e8e5e0", gridColumn: "span 2",
+                    border: "1px solid #e8e5e0",
                     display: "flex", gap: "20px", alignItems: "center",
                   }}>
                     <div style={{
