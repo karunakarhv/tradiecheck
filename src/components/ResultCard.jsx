@@ -28,7 +28,7 @@ export default function ResultCard({ data, onClose }) {
           ? "linear-gradient(90deg, rgba(0,232,122,0.15), transparent)"
           : "linear-gradient(90deg, rgba(255,59,59,0.15), transparent)",
         padding: "12px 20px",
-        display: "flex", alignItems: "center", gap: "10px",
+        display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px",
         borderBottom: `1px solid ${isActive ? "rgba(0,232,122,0.12)" : "rgba(255,59,59,0.12)"}`,
       }}>
         <span style={{ fontSize: "18px", fontWeight: 900, color: status.color, fontFamily: "'Courier New', monospace" }}>
@@ -44,7 +44,7 @@ export default function ResultCard({ data, onClose }) {
 
       <div style={{ padding: "24px" }}>
         {/* Tradie header */}
-        <div style={{ display: "flex", gap: "16px", alignItems: "flex-start", marginBottom: "24px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "flex-start", marginBottom: "24px" }}>
           <div style={{
             width: "56px", height: "56px", borderRadius: "12px",
             background: `linear-gradient(135deg, ${status.color}22, ${status.color}44)`,

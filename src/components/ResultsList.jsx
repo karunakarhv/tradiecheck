@@ -4,7 +4,7 @@ import { STATUS_COLORS } from "../constants/statusConfig";
 export default function ResultsList({ results, onSelect, onBack }) {
   return (
     <div style={{ animation: "slideUp 0.3s ease" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
         <button onClick={onBack} style={{
           background: "none", border: "1px solid #222", borderRadius: "6px",
           color: "#555", fontSize: "11px", padding: "4px 10px",
@@ -33,7 +33,7 @@ export default function ResultsList({ results, onSelect, onBack }) {
               onMouseEnter={(e) => e.currentTarget.style.borderColor = `${color}44`}
               onMouseLeave={(e) => e.currentTarget.style.borderColor = "#1e1e1e"}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: "14px", fontWeight: 700, color: "#fff", marginBottom: "3px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {licence.licensee}

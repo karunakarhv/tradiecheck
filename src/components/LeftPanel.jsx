@@ -29,7 +29,7 @@ export default function LeftPanel({ query, setQuery, loading, onSearch, onBulkUp
     <div className="tc-left">
 
       {/* Nav */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "52px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", justifyContent: "space-between", alignItems: "center", marginBottom: "52px" }}>
         {/* Logo */}
         <a href="/welcome" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px", color: "inherit" }}>
           <div style={{

@@ -9,7 +9,7 @@ export default function BulkResultsList({ results, onReset, onDownload }) {
   return (
     <div style={{ animation: "slideUp 0.3s ease", display: "flex", flexDirection: "column", height: "100%", gap: "20px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", justifyContent: "space-between", alignItems: "center" }}>
         <div>
           <div style={{ fontSize: "11px", color: "#00e87a", fontWeight: 700, letterSpacing: "0.15em", marginBottom: "4px" }}>
             BULK CHECK IN PROGRESS
@@ -49,9 +49,8 @@ export default function BulkResultsList({ results, onReset, onDownload }) {
         }} />
       </div>
 
-      {/* Results Table */}
       <div style={{
-        flex: 1, overflowY: "auto", background: "#080808",
+        flex: 1, overflowY: "auto", overflowX: "auto", background: "#080808",
         border: "1px solid #111", borderRadius: "12px",
       }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
