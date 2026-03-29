@@ -97,7 +97,7 @@ export default function LeftPanel({ query, setQuery, loading, onSearch, onBulkUp
       <div style={{
         background: "#0d0d0d", border: "1px solid #1e1e1e", borderRadius: "14px",
         padding: "6px 6px 6px 18px", display: "flex", alignItems: "center", gap: "10px",
-        transition: "border-color 0.2s", marginBottom: "12px",
+        transition: "border-color 0.2s", marginBottom: "12px", flexWrap: "wrap"
       }}
         onFocus={(e) => e.currentTarget.style.borderColor = "#00e87a44"}
         onBlur={(e)  => e.currentTarget.style.borderColor = "#1e1e1e"}
@@ -121,7 +121,7 @@ export default function LeftPanel({ query, setQuery, loading, onSearch, onBulkUp
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onSearch()}
           placeholder="Name or licence number..."
-          style={{ flex: 1, background: "none", border: "none", color: "#fff", fontSize: "15px", fontFamily: "'DM Sans', sans-serif" }}
+          style={{ flex: 1, minWidth: "120px", background: "none", border: "none", color: "#fff", fontSize: "15px", fontFamily: "'DM Sans', sans-serif" }}
         />
         <button
           onClick={() => onSearch()}
@@ -142,7 +142,7 @@ export default function LeftPanel({ query, setQuery, loading, onSearch, onBulkUp
       </div>
 
       {/* Bulk Upload */}
-      <div style={{ marginBottom: "32px", display: "flex", gap: "10px", alignItems: "center" }}>
+      <div style={{ marginBottom: "32px", display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
         <input
           type="file"
           accept=".csv"
