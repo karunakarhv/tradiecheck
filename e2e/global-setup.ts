@@ -2,9 +2,12 @@ import { chromium, type FullConfig } from '@playwright/test'
 import * as dotenv from 'dotenv'
 import * as path from 'path'
 import * as fs from 'fs'
+import { fileURLToPath } from 'url'
 import { LoginPageLocators } from './locators/LoginPageLocators'
 
 dotenv.config()
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default async function globalSetup(config: FullConfig) {
   const email = process.env.TEST_EMAIL
