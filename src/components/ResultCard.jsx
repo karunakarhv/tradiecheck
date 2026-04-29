@@ -6,12 +6,16 @@ export default function ResultCard({ data, onClose }) {
   const status   = STATUS_CONFIG[data.status];
   const isActive = data.status === "ACTIVE";
 
-  const expiryColor =
-    new Date(data.expiry) < new Date()
-      ? "#ff3b3b"
-      : new Date(data.expiry) < new Date(Date.now() + 90 * 86400000)
-      ? "#ff9500"
-      : "#888";
+  const expiryDate = data.expiry ? new Date(data.expiry) : null;
+  const now = new Date();
+  const ninetyDaysOut = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 90);
+  const expiryColor = !expiryDate
+    ? "#888"
+    : expiryDate < now
+    ? "#ff3b3b"
+    : expiryDate < ninetyDaysOut
+    ? "#ff9500"
+    : "#888";
 
   return (
     <div style={{
@@ -80,7 +84,9 @@ export default function ResultCard({ data, onClose }) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0" }}>
             <span style={{ color: "#888", fontSize: "13px", letterSpacing: "0.04em" }}>Licence Expiry</span>
             <span style={{ fontSize: "12px", fontWeight: 700, letterSpacing: "0.06em", color: expiryColor }}>
-              {new Date(data.expiry).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
+              {data.expiry
+                ? new Date(data.expiry).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })
+                : "—"}
             </span>
           </div>
         </div>

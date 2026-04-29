@@ -27,6 +27,11 @@ CLAUDE.md
 *.sln
 *.sw?
 .env
+.env.mobile
+
+# Capacitor native projects (generated — commit these after reviewing)
+# ios/
+# android/
 
 # Playwright
 playwright-report/

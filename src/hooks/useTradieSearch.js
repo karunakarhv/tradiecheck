@@ -2,6 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { NSW_STATUS, parseNSWDate, getVerifiableStatus } from "../lib/nsw";
 import { MOCK_TRADES } from "../lib/mockData";
 
+// Empty string falls back to relative URL in the web app.
+// For Capacitor mobile builds, set VITE_API_BASE_URL to the deployed GCP Cloud Run URL.
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
+
 export function useTradieSearch() {
   const [query, setQuery]           = useState("");
   const [loading, setLoading]       = useState(false);
@@ -35,7 +39,7 @@ export function useTradieSearch() {
     setResult(null);
 
     try {
-      const res  = await fetch(`/api/check?query=${encodeURIComponent(term)}&state=${selectedState}`);
+      const res  = await fetch(`${API_BASE}/api/check?query=${encodeURIComponent(term)}&state=${selectedState}`);
 
       if (res.status === 429) {
         setRateLimited(true);
@@ -99,16 +103,24 @@ export function useTradieSearch() {
   };
 
   const resetToList = () => {
-    setResults(null);
+    setResult(null);         // FIX: only clear selected item, keep the list
     setNotFound(false);
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
   const handleBulkUpload = async (file) => {
     if (!file) return;
+    if (file.size > 102400) { // 100KB limit
+      alert('File too large. Maximum size is 100KB.');
+      return;
+    }
     const text = await file.text();
     const rows = text.split(/\r?\n/).map(r => r.trim()).filter(r => r && !r.startsWith("#"));
     const queries = [...new Set(rows)]; // Unique queries
+    if (queries.length > 50) {
+      alert(`Too many entries (${queries.length}). Maximum is 50 per upload.`);
+      return;
+    }
 
     setBulkResults(queries.map(q => ({ query: q, status: "pending", data: null })));
     setResult(null);
@@ -119,13 +131,13 @@ export function useTradieSearch() {
       setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "loading" } : item));
 
       try {
-        const res = await fetch(`/api/check?query=${encodeURIComponent(q)}&state=${selectedState}`);
+        const res = await fetch(`${API_BASE}/api/check?query=${encodeURIComponent(q)}&state=${selectedState}`);
         if (res.status === 429) {
           setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "rateLimited" } : item));
           // Wait 5 seconds on rate limit and retry or stop? 
           // For UX, let's wait 5s and try once more, then skip if still failing.
           await new Promise(r => setTimeout(r, 5000));
-          const resRetry = await fetch(`/api/check?query=${encodeURIComponent(q)}&state=${selectedState}`);
+          const resRetry = await fetch(`${API_BASE}/api/check?query=${encodeURIComponent(q)}&state=${selectedState}`);
           if (resRetry.status === 429) {
              setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "rateLimited" } : item));
              continue; 
@@ -146,13 +158,13 @@ export function useTradieSearch() {
             data: trades[0] || null
           } : item));
         }
-      } catch (err) {
+      } catch {
         setBulkResults(prev => prev.map((item, idx) => idx === i ? { ...item, status: "error" } : item));
       }
 
       // Add a small delay between requests to stay under 20/min
       if (i < queries.length - 1) {
-        await new Promise(r => setTimeout(r, 2000));
+        await new Promise(r => setTimeout(r, 3500));
       }
     }
   };

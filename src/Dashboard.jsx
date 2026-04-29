@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NSW_STATUS, parseNSWDate } from "./lib/nsw";
+import { checkTradie } from "./lib/api";
 import StatusBadge from "./components/StatusBadge";
 import SourceIcon from "./components/SourceIcon";
 import LogoutButton from "./components/LogoutButton";
@@ -93,14 +94,17 @@ export default function TradieDashboard() {
     setNotFound(false);
     setTradie(null);
     try {
-      const res = await fetch(`http://localhost:3001/api/check?query=${encodeURIComponent(term)}&state=${selectedState}`);
-      const data = await res.json();
-      const mapped = mapAPIResponse(data);
-      if (mapped) {
-        setTradie(mapped);
-        setTab("overview");
-      } else {
+      const { data, unsupportedState, error } = await checkTradie(term, selectedState);
+      if (error || unsupportedState || !data) {
         setNotFound(true);
+      } else {
+        const mapped = mapAPIResponse(data);
+        if (mapped) {
+          setTradie(mapped);
+          setTab("overview");
+        } else {
+          setNotFound(true);
+        }
       }
     } catch {
       setNotFound(true);

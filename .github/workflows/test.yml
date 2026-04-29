@@ -59,9 +59,89 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+  security:
+    name: Security checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - run: npm ci
+
+      # TD-011: npm audit — fail on HIGH or CRITICAL vulnerabilities
+      - name: npm audit (HIGH/CRITICAL gate)
+        run: npm audit --audit-level=high
+
+      # TD-012: Bundle analysis — ensure backend-only secrets never appear in dist/
+      - name: Build frontend bundle
+        run: npm run build
+
+      - name: Scan bundle for leaked secrets
+        run: |
+          echo "Scanning dist/assets/*.js for backend-only env var names and process.env..."
+          FOUND=0
+          PATTERNS=(
+            "TRADES_API_KEY"
+            "HRW_API_KEY"
+            "ASBESTOS_API_KEY"
+            "CLOUD_RUN_ORIGIN"
+            "process\\.env"
+          )
+          for pattern in "${PATTERNS[@]}"; do
+            if grep -rl "$pattern" dist/assets/*.js 2>/dev/null | grep -q .; then
+              echo "FAIL: Pattern '$pattern' found in bundle — backend secret leaked into frontend build"
+              FOUND=1
+            fi
+          done
+          if [ "$FOUND" -eq 1 ]; then
+            echo "Bundle analysis failed. Review vite.config.js define block and remove any process.env references that expose backend-only variables."
+            exit 1
+          fi
+          echo "Bundle analysis passed — no backend secrets found in dist/."
+
+      # TD-010: Secret scanning — gitleaks with grep-based fallback
+      - name: Install gitleaks
+        run: |
+          wget -q https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz
+          tar -xzf gitleaks_8.21.2_linux_x64.tar.gz
+          echo "gitleaks installed: $(./gitleaks version)"
+
+      - name: Secret scan (gitleaks)
+        run: |
+          if ./gitleaks detect --source . --no-git --exit-code 1 2>/dev/null; then
+            echo "gitleaks: no secrets detected."
+          else
+            GITLEAKS_EXIT=$?
+            if [ "$GITLEAKS_EXIT" -eq 1 ]; then
+              echo "FAIL: gitleaks detected potential secrets in the source tree."
+              exit 1
+            fi
+            echo "gitleaks unavailable or encountered an error — running grep-based fallback scan..."
+            # Fallback: grep for common secret patterns (long hex/base64 strings near key names)
+            FOUND=0
+            if grep -rn \
+                --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" \
+                --include="*.json" --include="*.env*" --include="*.yml" --include="*.yaml" \
+                --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git \
+                -E "(API_KEY|API_SECRET|CLIENT_SECRET|PASSWORD|TOKEN)\s*[:=]\s*['\"]?[A-Fa-f0-9]{20,}" \
+                . 2>/dev/null; then
+              echo "FAIL: grep fallback found patterns resembling real secrets."
+              FOUND=1
+            fi
+            if [ "$FOUND" -eq 1 ]; then
+              exit 1
+            fi
+            echo "Grep-based fallback scan passed."
+          fi
+
   deploy:
     name: Deploy to Production
-    needs: [unit, e2e]
+    needs: [unit, e2e, security]
     if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -106,7 +186,7 @@ jobs:
 
   notify:
     name: Notify on failure
-    needs: [unit, e2e]
+    needs: [unit, e2e, security]
     if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 

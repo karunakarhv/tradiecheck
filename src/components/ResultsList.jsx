@@ -22,7 +22,7 @@ export default function ResultsList({ results, onSelect, onBack }) {
 
           return (
             <button
-              key={licence.licenceID}
+              key={licence.licenceNumber}
               onClick={() => onSelect(licence)}
               style={{
                 background: "#0d0d0d", border: "1px solid #1e1e1e",

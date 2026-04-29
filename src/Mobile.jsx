@@ -1,4 +1,6 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Capacitor } from "@capacitor/core";
 import { MOCK_TRADES } from "./lib/mockData";
 
 const RECENT = [
@@ -159,10 +161,14 @@ function HomeScreen({ onSearch, onDemo }) {
           <div style={{ fontSize: "22px", marginBottom: "8px" }}>📷</div>
           <div style={{ fontSize: "15px", fontWeight: 800, color: "#fff", marginBottom: "4px" }}>Scan licence card</div>
           <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", marginBottom: "14px" }}>Point camera at licence for instant check</div>
-          <div style={{
-            background: "#00e87a", borderRadius: "10px", padding: "10px",
-            fontSize: "13px", fontWeight: 700, color: "#000", textAlign: "center",
-          }}>Open Camera</div>
+          <div
+            onClick={openCamera}
+            style={{
+              background: "#00e87a", borderRadius: "10px", padding: "10px",
+              fontSize: "13px", fontWeight: 700, color: "#000", textAlign: "center",
+              cursor: "pointer",
+            }}
+          >Open Camera</div>
         </div>
       </div>
 
@@ -380,6 +386,25 @@ function TabBar({ active }) {
       ))}
     </div>
   );
+}
+
+async function openCamera() {
+  if (!Capacitor.isNativePlatform()) {
+    alert("Camera scanning is available in the iOS and Android app.");
+    return;
+  }
+  try {
+    const photo = await Camera.getPhoto({
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Camera,
+      quality: 90,
+    });
+    // photo.dataUrl contains the scanned image — OCR/licence parsing would go here
+    console.log("Licence card photo captured:", photo.dataUrl?.slice(0, 60));
+  } catch (err) {
+    // User cancelled or permission denied — no action needed
+    console.warn("Camera cancelled:", err);
+  }
 }
 
 export default function MobileApp() {
