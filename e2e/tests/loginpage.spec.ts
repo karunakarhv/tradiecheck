@@ -1,7 +1,11 @@
 import { test, expect } from "@playwright/test";
 import LoginPage from "../pages/LoginPage";
-import * as dotenv from "dotenv"; // or import dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 dotenv.config();
+
+// Clear storageState so these tests always start unauthenticated.
+// If a session cookie were present, navigating to /login would redirect to /welcome.
+test.use({ storageState: { cookies: [], origins: [] } });
 
 test.describe("Login Features", async () => {
   test("allows user to login with valid credentials", async ({ page }) => {

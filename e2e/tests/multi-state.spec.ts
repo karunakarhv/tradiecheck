@@ -1,18 +1,10 @@
 import { test, expect } from "@playwright/test";
-import LoginPage from "../pages/LoginPage";
 import TradieCheckPage from "../pages/TradieCheckPage";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 test.describe("Multi-State Support", () => {
   let tradieCheckPage: TradieCheckPage;
 
   test.beforeEach(async ({ page }) => {
-    const email = process.env.TEST_EMAIL || "";
-    const password = process.env.TEST_PASSWORD || "";
-    const loginPage = new LoginPage(page);
-    await loginPage.login(email, password);
-    await expect(page).toHaveURL("/welcome");
     tradieCheckPage = new TradieCheckPage(page);
     await tradieCheckPage.visit();
   });

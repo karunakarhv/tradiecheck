@@ -1,21 +1,11 @@
 import { test, expect } from "@playwright/test";
-import LoginPage from "../pages/LoginPage";
 import MobilePage from "../pages/MobilePage";
 import { MobileLocators } from "../locators/MobileLocators";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 test.describe("Mobile App Mockup", () => {
   let mobilePage: MobilePage;
 
   test.beforeEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.login(
-      process.env.TEST_EMAIL || "",
-      process.env.TEST_PASSWORD || ""
-    );
-    await expect(page).toHaveURL(/.*welcome.*/);
-
     mobilePage = new MobilePage(page);
     await mobilePage.visit();
     await expect(page).toHaveURL(/.*mobile.*/);

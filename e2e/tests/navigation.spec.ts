@@ -1,23 +1,10 @@
 import { test, expect } from "@playwright/test";
-import LoginPage from "../pages/LoginPage";
 import TradieCheckPage from "../pages/TradieCheckPage";
 import DashboardPage from "../pages/DashboardPage";
 import MobilePage from "../pages/MobilePage";
 import HelpPage from "../pages/HelpPage";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 test.describe("Navigation via POM", () => {
-  let loginPage: LoginPage;
-
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    await loginPage.login(
-      process.env.TEST_EMAIL || "",
-      process.env.TEST_PASSWORD || ""
-    );
-    await expect(page).toHaveURL(/.*welcome.*/);
-  });
 
   test("navigates to tradie check page", async ({ page }) => {
     const p = new TradieCheckPage(page);

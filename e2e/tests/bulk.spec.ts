@@ -1,20 +1,9 @@
 import { test, expect } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
-import LoginPage from "../pages/LoginPage";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 test.describe("Bulk CSV Upload", () => {
   test("should process CSV and show results sequentially", async ({ page }) => {
-    // Log in first
-    const loginPage = new LoginPage(page);
-    await loginPage.login(
-      process.env.TEST_EMAIL || "",
-      process.env.TEST_PASSWORD || "",
-    );
-    await expect(page).toHaveURL(/.*welcome.*/);
-
     // Mock API
     await page.route("**/api/check?query=481998C", async (route) => {
       await route.fulfill({

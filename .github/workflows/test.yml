@@ -28,6 +28,9 @@ jobs:
   e2e:
     name: E2E tests
     runs-on: ubuntu-latest
+    env:
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4

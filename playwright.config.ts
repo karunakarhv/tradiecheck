@@ -6,8 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: [["html", { open: "never" }], ["list"]],
+  globalSetup: "./e2e/global-setup",
   use: {
     baseURL: "http://localhost:5173",
+    storageState: "e2e/.auth/user.json",
     trace: "on-first-retry",
   },
   projects: [
