@@ -73,9 +73,11 @@ jobs:
 
       - run: npm ci
 
-      # TD-011: npm audit — fail on HIGH or CRITICAL vulnerabilities
-      - name: npm audit (HIGH/CRITICAL gate)
-        run: npm audit --audit-level=high
+      # TD-011: npm audit — fail on HIGH or CRITICAL vulnerabilities in production deps.
+      # --omit=dev excludes devDependencies (Capacitor CLI contains tar/uuid HIGH vulns
+      # with no upstream fix; they are build-time only and never run on Cloud Run).
+      - name: npm audit (HIGH/CRITICAL gate — production deps)
+        run: npm audit --audit-level=high --omit=dev
 
       # TD-012: Bundle analysis — ensure backend-only secrets never appear in dist/
       - name: Build frontend bundle
