@@ -112,14 +112,15 @@ jobs:
       # TD-010: Secret scanning — gitleaks with grep-based fallback
       - name: Install gitleaks
         run: |
-          wget -q https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz
-          tar -xzf gitleaks_8.21.2_linux_x64.tar.gz
-          echo "gitleaks installed: $(./gitleaks version)"
+          # Download to /tmp so the binary is never inside the source tree being scanned
+          wget -q https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz -O /tmp/gitleaks.tar.gz
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+          echo "gitleaks installed: $(/tmp/gitleaks version)"
 
       - name: Secret scan (gitleaks)
         run: |
           # .gitleaks.toml excludes node_modules, dist, .env, and e2e/.auth
-          if ./gitleaks detect --source . --no-git --config .gitleaks.toml --exit-code 1; then
+          if /tmp/gitleaks detect --source . --no-git --config .gitleaks.toml --exit-code 1; then
             echo "gitleaks: no secrets detected."
           else
             GITLEAKS_EXIT=$?

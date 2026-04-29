@@ -4,7 +4,14 @@ title = "TradieCheck gitleaks configuration"
 useDefault = true
 
 [allowlist]
-description = "Paths excluded from secret scanning"
+description = "Paths and values excluded from secret scanning"
+# Known-safe documentation examples — not real credentials
+stopwords = [
+  "cafebabe:deadbeef",           # gitleaks sidekiq example from their own README
+  "your_trades_consumer_key_here",
+  "your_hrw_consumer_key_here",
+  "your_anon_key_here",
+]
 paths = [
   # Generated/installed artefacts — not source code
   '''node_modules''',
@@ -17,4 +24,8 @@ paths = [
   # Playwright report artefacts
   '''playwright-report''',
   '''test-results''',
+
+  # gitleaks binary/archive if accidentally placed in the repo root
+  # (the binary embeds its own test-fixture strings which trigger rules)
+  '''gitleaks(_[^/]+)?(\.tar\.gz)?$''',
 ]
