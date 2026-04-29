@@ -58,9 +58,9 @@ test.describe("Login Features", async () => {
     await loginPage.visit();
     await loginPage.fillEmail("not-an-email-format");
     await loginPage.fillPassword("mockpassword123");
-    
-    // The button is enabled, but clicking it should be blocked by HTML5 form validation
-    await loginPage.submit();
+
+    // React's isValidForSubmit() disables the button when email format is invalid
+    await expect(page.locator('button[type="submit"]')).toBeDisabled();
     await expect(page).toHaveURL(/.*login.*/);
   });
 

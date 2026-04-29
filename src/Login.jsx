@@ -567,7 +567,7 @@ export default function Login() {
     }
   }
 
-  const titles = { signin: 'Welcome back', signup: 'Create an account', reset: 'Reset password' }
+  const titles = { signin: 'Sign in', signup: 'Create account', reset: 'Reset password' }
   const subtitles = {
     signin: 'Enter your credentials to access your dashboard.',
     signup: 'Join thousands of Australians verifying tradies instantly.',
@@ -603,7 +603,7 @@ export default function Login() {
                   Tradie<span className="login-logo-accent">Check</span>
                 </div>
               </a>
-              <h1 className="login-title">{titles[mode]}</h1>
+              <h1 className="login-title gl-title">{titles[mode]}</h1>
               <p className="login-subtitle">{subtitles[mode]}</p>
             </div>
 
@@ -616,6 +616,7 @@ export default function Login() {
                 <label className="form-label">Email address</label>
                 <div className="form-input-wrap">
                   <input
+                    id="gl-email"
                     className={`form-input ${email.length > 0 ? (emailValid ? 'is-valid' : 'is-invalid') : ''}`}
                     type="email"
                     placeholder="name@example.com"
@@ -644,6 +645,7 @@ export default function Login() {
                   </div>
                   <div className="form-input-wrap">
                     <input
+                      id="gl-password"
                       className="form-input pw-input"
                       type={showPassword ? 'text' : 'password'}
                       placeholder={mode === 'signup' ? 'Create a strong password' : 'Enter your password'}
@@ -652,7 +654,7 @@ export default function Login() {
                       autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
                       required
                     />
-                    <button type="button" className="pw-toggle" style={{ right: '14px' }} onClick={() => setShowPassword(!showPassword)} tabIndex="-1">
+                    <button type="button" className="pw-toggle gl-pw-toggle" style={{ right: '14px' }} onClick={() => setShowPassword(!showPassword)} tabIndex="-1">
                       {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                     </button>
                   </div>
@@ -713,11 +715,11 @@ export default function Login() {
 
             <div className="form-footer">
               {mode === 'signin' ? (
-                <>Don't have an account? <button className="link-btn" onClick={() => {setMode('signup'); setError('')}}>Sign up here</button></>
+                <>Don't have an account? <button className="link-btn" onClick={() => {setMode('signup'); setError('')}}>Create account</button></>
               ) : mode === 'signup' ? (
-                <>Already have an account? <button className="link-btn" onClick={() => {setMode('signin'); setError('')}}>Log in</button></>
+                <>Already have an account? <button className="link-btn" onClick={() => {setMode('signin'); setError('')}}>Sign in instead</button></>
               ) : (
-                <button className="link-btn" style={{ marginLeft: 0 }} onClick={() => {setMode('signin'); setError('')}}>← Back to Login</button>
+                <button className="link-btn" style={{ marginLeft: 0 }} onClick={() => {setMode('signin'); setError('')}}>Back to sign in</button>
               )}
             </div>
 
