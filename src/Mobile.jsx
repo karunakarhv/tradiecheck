@@ -10,7 +10,7 @@ const RECENT = [
 
 function Phone({ children, bg = "#f5f2ec" }) {
   return (
-    <div style={{
+    <div className="mobile-phone" style={{
       width: "375px", minHeight: "812px",
       background: bg,
       borderRadius: "52px",
@@ -423,7 +423,7 @@ export default function MobileApp() {
   };
 
   return (
-    <div style={{
+    <div className="mobile-outer" style={{
       minHeight: "100dvh",
       background: "linear-gradient(145deg, #e8e4de 0%, #d4d0ca 100%)",
       display: "flex", alignItems: "center", justifyContent: "center",
@@ -438,6 +438,11 @@ export default function MobileApp() {
         input { font-family: inherit; }
         button { font-family: inherit; }
         ::-webkit-scrollbar { display: none; }
+        @media (max-width: 600px) {
+          .mobile-outer { padding-left: 0 !important; padding-right: 0 !important; }
+          .mobile-sidebar { display: none !important; }
+          .mobile-phone { width: calc(100vw - 20px) !important; min-height: 90dvh !important; }
+        }
       `}</style>
 
       <a href="/welcome" style={{
@@ -465,7 +470,7 @@ export default function MobileApp() {
         </Phone>
 
         {/* Sidebar info */}
-        <div style={{ maxWidth: "320px", paddingTop: "40px" }}>
+        <div className="mobile-sidebar" style={{ maxWidth: "320px", paddingTop: "40px" }}>
           <div style={{ fontSize: "11px", letterSpacing: "0.15em", color: "#888", marginBottom: "12px", fontWeight: 700 }}>TRADIECHECK MOBILE</div>
           <h2 style={{ fontSize: "36px", fontWeight: 900, color: "#1a1814", letterSpacing: "-0.04em", lineHeight: 1.05, marginBottom: "16px" }}>
             Check before<br />you unlock<br />the door.

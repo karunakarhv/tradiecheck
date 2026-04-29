@@ -67,7 +67,7 @@ export class MobilePage extends BasePage {
   }
 
   getLicenceSuspendedBadge() {
-    return this.page.getByText(MobileLocators.licenceSuspended);
+    return this.page.getByText(MobileLocators.licenceSuspended, { exact: true });
   }
 
   getCheckLicenceCell()   { return this.page.getByText(MobileLocators.checkLicenceLabel,   { exact: true }); }
