@@ -1,0 +1,20 @@
+title = "TradieCheck gitleaks configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Paths excluded from secret scanning"
+paths = [
+  # Generated/installed artefacts — not source code
+  '''node_modules''',
+  '''dist''',
+
+  # Gitignored credential files — never committed, scanned elsewhere
+  '''(^|/)\.env$''',
+  '''e2e/\.auth''',
+
+  # Playwright report artefacts
+  '''playwright-report''',
+  '''test-results''',
+]

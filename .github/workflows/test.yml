@@ -118,7 +118,8 @@ jobs:
 
       - name: Secret scan (gitleaks)
         run: |
-          if ./gitleaks detect --source . --no-git --exit-code 1 2>/dev/null; then
+          # .gitleaks.toml excludes node_modules, dist, .env, and e2e/.auth
+          if ./gitleaks detect --source . --no-git --config .gitleaks.toml --exit-code 1; then
             echo "gitleaks: no secrets detected."
           else
             GITLEAKS_EXIT=$?
