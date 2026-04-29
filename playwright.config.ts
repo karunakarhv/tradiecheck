@@ -21,7 +21,17 @@ export default defineConfig({
     {
       name: "mobile-ios",
       testMatch: /.*mobile\.spec\.ts/,
-      use: { ...devices["iPhone 12"] },
+      // Spread device profile (viewport, userAgent, touch) but override the
+      // defaultBrowserType so this project runs on Chromium, which is already
+      // installed in CI.  WebKit requires separate installation + system deps
+      // on Linux and isn't available in the ubuntu-latest runner by default.
+      use: {
+        viewport: devices["iPhone 12"].viewport,
+        userAgent: devices["iPhone 12"].userAgent,
+        deviceScaleFactor: devices["iPhone 12"].deviceScaleFactor,
+        isMobile: devices["iPhone 12"].isMobile,
+        hasTouch: devices["iPhone 12"].hasTouch,
+      },
     },
     {
       name: "mobile-android",
